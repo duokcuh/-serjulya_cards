@@ -3,25 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.css">
     <link rel="stylesheet" href=style/reset.css>
-<!--    <link rel="stylesheet" href="style/style.css">-->
+    <link rel="stylesheet" href="style/style.css">
     <link rel="stylesheet" href="style/modal-style.css">
 </head>
 <body>
 
-<nav class="navbar">
+<nav class="navbar" id="navbar">
     <div class="navbar-logo">
         <img class="navbar-logo-img" src="img/logo.png" alt="">
         <a href="#" class="navbar-logo-name">Hospital</a>
     </div>
-    <button class="register-btn">Вход</button>
+
+    <button class="login-btn" id="login-btn">Вход</button>
 </nav>
 
-<div class="wrapper">
-<div class="cards-container"></div>
+<div class="filter-form">
+    <div class="search-form-wrapper">
+        <input class="search-form" placeholder="Поиск по заголовку/содержимому визита...">
+        <i class="fas fa-search search-icon"></i>
+    </div>
+    <select class="select">
+        <option>Все визиты</option>
+        <option>Визит прошел</option>
+        <option>Визит не прошел</option>
+    </select>
+    <select class="select">
+        <option>Все визиты</option>
+        <option>Срочные визиты</option>
+        <option>Обычные визиты</option>
+        <option>Не срочные визиты</option>
+    </select>
+    <button class="search-btn">Поиск</button>
+</div>
+
+<!--<div id="modal"></div>-->
+
+<div class="wrapper" id="wrapper">
+    <div class="cards-container" id="cards-container">
+        <div class="no-items">No items have been added</div>
+    </div>
     <img src="img/nurse.png" class="img-nurse" alt="nurse">
 </div>
 
+
+
+
+
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="script/script.js"></script>
 <script src="script/modal.js"></script>
 <!--<script src="script/script.js"></script>-->
 
