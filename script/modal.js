@@ -111,12 +111,6 @@ class SelectStatus extends Select {
   }
 }
 
-const selectVisit = new Select('visit-status', 'select');
-const statusContainer = document.getElementById('status-container');
-selectVisit.render(statusContainer);
-
-const selectStatus = new SelectStatus();
-selectStatus.render();
 
 
 
@@ -143,12 +137,6 @@ class SelectPriority extends Select {
   }
 }
 
-const visitPriority = new Select('visit-priority', 'select');
-const priorityContainer = document.getElementById('priority-container');
-visitPriority.render(priorityContainer);
-
-const selectPriority = new SelectPriority();
-selectPriority.render();
 
 
 
@@ -272,6 +260,26 @@ navbar.addEventListener('click', (event) => {
             const modalBg = document.getElementsByClassName('entry-modal-bg');
             modalBg[0].remove();
 
+            const filter = document.querySelector('.filter-form');
+            filter.style.display = 'flex';
+
+            const selectVisit = new Select('visit-status', 'select');
+            const statusContainer = document.getElementById('status-container');
+            selectVisit.render(statusContainer);
+
+            const selectStatus = new SelectStatus();
+            selectStatus.render();
+
+
+            const visitPriority = new Select('visit-priority', 'select');
+            const priorityContainer = document.getElementById('priority-container');
+            visitPriority.render(priorityContainer);
+
+            const selectPriority = new SelectPriority();
+            selectPriority.render();
+
+
+
           }
 
           if (response.data.status === "Error") {
@@ -305,27 +313,25 @@ navbar.addEventListener('click', (event) => {
     console.log(doctorSelect);
 
     doctorSelect.onchange = function(){
-      debugger;
       const visitationForm = new Form('visit-form');
       visitationForm.render(modalCreateVisit);
       const visit = new visitForm();
       visit.render();
-      let visitForms = document.querySelectorAll('#visit-form>.input');
+      let visitForms = document.getElementById('visit-form');
       console.log(visitForms);
       switch(this.value){
         case 'cardiolog':
-
-          visitForms.remove();
+          visitForms.innerHTML = ``;
           const visitCardiolog = new visitFormCardiolog();
           visitCardiolog.render();
         break;
         case 'dentist':
-          visitForms.remove();
+          visitForms.innerHTML = ``;
           const visitDentist = new visitFormDentist();
           visitDentist.render();
           break;
         case 'terapist':
-          visitForms.remove();
+          visitForms.innerHTML = ``;
           const visitTerapevt = new visitFormTerapevt();
           visitTerapevt.render();
           break;
