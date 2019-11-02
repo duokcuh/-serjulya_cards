@@ -156,22 +156,10 @@ body {
     box-shadow: 0 3px 8px #d6d6d6;
 }
 
-.submit-btn {
-    width: 130px;
-    height: 45px;
-    border: none;
-    background-color: #2a2a2a;
-    box-shadow: 0 5px 5px 0 #dedede;
-    border-radius: 3px;
-    color: white;
-    font-size: 18px;
-    text-transform: uppercase;
-    outline: none;
-}
-
 .submit-btn:hover {
     background-color: darkblue;
     cursor: pointer;
+    color: white;
     transition: 0.8s;
 }
 
