@@ -6,7 +6,7 @@ class Form {
     render(container) {
         const form = document.createElement("form");
         form.id = this._id;
-        container.append(form);
+        // container.append(form);
     }
 }
 
@@ -30,7 +30,7 @@ class Input {
         input.name = this._name;
         input.value = this._value;
         input.required = this._required;
-        container.append(input);
+        // container.append(input);
     }
 }
 
@@ -150,7 +150,7 @@ visitCardiolog.render();
 
 /*AJAX-запрос на авторизацію*/
 
-const registerBtn = document.getElementById('register-btn');
+const registerBtn = document.getElementById('login-btn');
 
 registerBtn.addEventListener('click', function () {
     const email = document.getElementById('email-input').value;
@@ -195,3 +195,121 @@ registerBtn.addEventListener('click', function () {
             console.log(error);
         });
 });
+
+class Visit {
+    constructor (id, patient, doctor, doctorName, title, description ='', priority, status) {
+        this._id = id;
+        this._patient = patient;
+        this._doctor = doctor;
+        this._doctorName = doctorName;
+        this._title = title;
+        this._description = description;
+        this._priority = priority;
+        this._status = status;
+    }
+
+    render (container) {
+        const visit = document.createElement('form');
+        visit.className = 'visit';
+        const visitFieldset = document.createElement('fieldset');
+        visitFieldset.setAttribute('disabled', 'disabled');
+        const editVisit = document.createElement('select');
+        editVisit.className = 'visit-edit-select';
+        editVisit.innerHTML = `<select>
+                <option value="done">Завершить</option>
+                <option value="edit" selected>Редактировать</option>
+                <option value="delete">Удалить</option>
+            </select>`;
+        const moreBtn = document.createElement('button');
+        moreBtn.className = 'visit-more-btn';
+        moreBtn.innerText = 'Показать больше';
+
+        container.append(visit);
+        visit.append(visitFieldset, editVisit, moreBtn);
+
+        const patient = document.createElement('p');
+        patient.innerHTML = `<label>Пациент</label><input type="text" value="${this._patient}">`;
+        const doctor = document.createElement('p');
+        doctor.innerHTML = `<label>Доктор</label><input type="text" value="${this._doctor}">`;
+        const doctorName = document.createElement('p');
+        doctorName.innerHTML = `<label>Имя доктора</label><input type="text" value="${this._doctorName}">`;
+        const title = document.createElement('p');
+        title.innerHTML = `<label>Цель визита</label><input type="text" value="${this._title}">`;
+        const description = document.createElement('p');
+        description.innerHTML = `<label>Комментарий</label><textarea rows="3">${this._description}</textarea>`;
+        const priority = document.createElement('p');
+        priority.innerHTML = `<label>Срочность</label><select>
+                <option>${this._priority}</option>
+                <option>${this._priority === 'Высокая' ? 'Обычная' : 'Высокая'}</option>
+                <option>${this._priority === 'Низкая' ? 'Обычная' : 'Низкая'}</option>
+            </select>`;
+        const status = document.createElement('p');
+        status.innerHTML = `<label>Статус</label><select>
+                <option>${this._status}</option>
+                <option>${this._status === 'открыт' ? 'завершен' : 'открыт'}</option>
+            </select>`;
+
+        visitFieldset.append(patient, doctor, doctorName, title, description, priority, status);
+
+        return visitFieldset;
+    }
+
+}
+
+class VisitCardio extends Visit {
+    constructor (pressure, massIndex, diseases, age, ...args) {
+        super(...args);
+        this._pressure = pressure;
+        this._massIndex = massIndex;
+        this._diseases = diseases;
+        this._age = age;
+    }
+    render(container) {
+        const pressure = document.createElement('p');
+        pressure.innerHTML = `<label>Давление</label><input type="number" value=${this._pressure}>`;
+        const massIndex = document.createElement('p');
+        massIndex.innerHTML = `<label>Индекс массы тела</label><input type="number" value=${this._massIndex}>`;
+        const diseases = document.createElement('p');
+        diseases.innerHTML = `<label>Заболевания</label><textarea rows="3">${this._diseases}</textarea>`;
+        const age = document.createElement('p');
+        age.innerHTML = `<label>Возраст</label><input type="number" value=${this._age}>`;
+
+
+        super.render(container).append(pressure, massIndex, diseases, age);
+
+    }
+}
+
+const cardioTest = new VisitCardio (pressure = 12, massIndex = 35, diseases = 'не болел', age = 45, id = 66, patient = 'Афанасий', doctor = 'кардиолог', doctorName = "Степан Петрович", title = 'аритмия', description = 'постоянная боль в сердце и высокое давление', priority = 'Низкая', status = 'открыт');
+const cardsContainer = document.getElementById('cards-container');
+cardioTest.render(cardsContainer);
+console.log(cardioTest);
+
+
+class VisitDentist extends Visit {
+    constructor (lastVisit, ...args) {
+        super(...args);
+        this._lastVisit = lastVisit;
+    }
+
+    render(container) {
+        const lastVisit = document.createElement('p');
+        lastVisit.innerHTML = `<label>Давление</label><input type="date" value=${this._lastVisit}>`;
+
+        super.render(container).append(lastVisit);
+    }
+}
+
+class VisitTherapist extends Visit {
+    constructor (age, ...args) {
+        super(...args);
+        this._age = age;
+    }
+
+    render(container) {
+        const age = document.createElement('p');
+        age.innerHTML = `<label>Возраст</label><input type="number" value=${this._age}>`;
+
+        super.render(container).append(age);
+    }
+}
