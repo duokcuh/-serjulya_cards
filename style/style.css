@@ -1,3 +1,5 @@
+@import "cards.css";
+
 body {
     background-image: url("../img/bc.png");
 }
@@ -111,14 +113,13 @@ body {
     /*display: flex;*/
     justify-content: center;
     align-items: center;
-    display: none;
+    /*display: none;*/
 }
 
 .cards-container {
-    display: none;
-    /*display: flex;*/
-    justify-content: center;
-    align-items: center;
+    /*display: none;*/
+    display: flex;
+    align-items: start;
     margin-top: 40px;
     border: 2px solid gray;
     width: 80%;
