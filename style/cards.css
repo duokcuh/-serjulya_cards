@@ -1,0 +1,33 @@
+.visit {
+  width: 330px;
+  padding: 5px;
+  margin: 5px;
+  border: 1px solid black;
+  border-radius: 5px;
+}
+.visit p {
+  width: 100%;
+  padding: 2px;
+  display: flex;
+  justify-content: space-between;
+}
+.visit input {
+  width: 170px;
+  box-sizing: border-box;
+}
+.visit textarea {
+  width: 170px;
+  box-sizing: border-box;
+  resize: none;
+}
+.visit select {
+  width: 170px;
+  box-sizing: border-box;
+}
+.visit-more-btn {
+  float: right;
+  margin: 2px;
+}
+.visit-edit-select {
+  margin: 2px;
+}
