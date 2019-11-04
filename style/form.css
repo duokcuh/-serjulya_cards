@@ -1,0 +1,47 @@
+#registration-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+}
+
+.input {
+    display: block;
+    height: 50px;
+    width: 410px;
+    margin-bottom: 15px;
+    font-size: 14px;
+    padding: 1px 6px;
+    border: 1px solid lightgrey;
+    border-radius: 3px;
+    box-sizing: border-box;
+}
+
+.input:focus {
+    outline: 0;
+    border: none;
+    box-shadow: 0 3px 8px #d6d6d6;
+}
+
+.submit-btn {
+    text-align: center;
+    margin: 0 auto;
+    display: inline-block;
+    width: 100px;
+    border-radius: 7px;
+    background-color: white;
+    color: black;
+    font-weight: bold;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    cursor: pointer;
+    padding: 10px;
+}
+
+.submit-btn:hover {
+    background-color: darkblue;
+    cursor: pointer;
+    color: white;
+    transition: 0.8s;
+}
