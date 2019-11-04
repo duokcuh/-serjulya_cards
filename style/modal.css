@@ -74,27 +74,6 @@
   padding: 10px;
 }
 
-/*.modal-buttons {*/
-/*  display: flex;*/
-/*  flex-direction: row;*/
-/*}*/
-
-.submit-btn {
-  text-align: center;
-  margin: 0 auto;
-  display: inline-block;
-  width: 100px;
-  border-radius: 7px;
-  background-color: white;
-  color: black;
-  font-weight: bold;
-  border: none;
-  outline: none;
-  font-size: 16px;
-  cursor: pointer;
-  padding: 10px;
-}
-
 .modal-close {
   position: absolute;
   top: 0;
@@ -116,27 +95,7 @@
   transition: 0.8s;
 }
 
-#registration-form {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 20px;
-}
 
-.select {
-  display: inline-block;
-  font-size: 16px;
-  font-weight: 700;
-  padding: 5px;
-  height: 50px;
-  width: 210px;
-  border: 1px solid gray;
-}
 
-.filter-form {
-  display: none;
-  justify-content: space-around;
-  align-items: center;
-  padding: 20px 0;
-  box-shadow: 0 3px 5px 0 #dcdcdc;
-}
+
+

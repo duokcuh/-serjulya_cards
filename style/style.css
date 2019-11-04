@@ -1,4 +1,6 @@
 @import "cards.css";
+@import "modal.css";
+@import "form.css";
 
 body {
     background-image: url("../img/bc.png");
@@ -47,8 +49,14 @@ body {
     margin-right: 30px;
 }
 
+.login-btn:hover {
+    background-color: black;
+    color: white;
+    transition: 0.8s;
+}
+
 .filter-form {
-    display: flex;
+    display: none;
     justify-content: space-around;
     align-items: center;
     padding: 20px 0;
@@ -87,7 +95,7 @@ body {
     font-weight: 700;
     padding: 5px;
     height: 50px;
-    width: 200px;
+    width: 210px;
     border: 1px solid gray;
 }
 
@@ -110,15 +118,15 @@ body {
 }
 
 .wrapper {
-    /*display: flex;*/
+    display: flex;
     justify-content: center;
     align-items: center;
     /*display: none;*/
 }
 
 .cards-container {
-    /*display: none;*/
-    display: flex;
+    display: none;
+    /*display: flex;*/
     align-items: start;
     margin-top: 40px;
     border: 2px solid gray;
@@ -131,41 +139,6 @@ body {
     color: gray;
 }
 
-.img-nurse {
-    position: absolute;
-    height: 35vh;
-    right: 10px;
-    bottom: 10%;
-}
 
-.input {
-    display: block;
-    height: 50px;
-    width: 410px;
-    margin-bottom: 15px;
-    font-size: 14px;
-    padding: 1px 6px;
-    border: 1px solid lightgrey;
-    border-radius: 3px;
-    box-sizing: border-box;
-}
 
-.input:focus {
-    outline: 0;
-    border: none;
-    box-shadow: 0 3px 8px #d6d6d6;
-}
 
-.submit-btn:hover {
-    background-color: darkblue;
-    cursor: pointer;
-    color: white;
-    transition: 0.8s;
-}
-
-#modal {
-    margin-left: 300px;
-    width: 500px;
-    height: 500px;
-    border: 2px solid black;
-}
