@@ -1,27 +1,28 @@
 .visit {
-  width: 330px;
+  width: 400px;
   padding: 5px;
   margin: 5px;
   border: 1px solid black;
   border-radius: 5px;
 }
-.visit p {
+.visit-field {
   width: 100%;
   padding: 2px;
   display: flex;
   justify-content: space-between;
 }
+.visit-field-hide {display: none;}
 .visit input {
-  width: 170px;
+  width: 260px;
   box-sizing: border-box;
 }
 .visit textarea {
-  width: 170px;
+  width: 260px;
   box-sizing: border-box;
   resize: none;
 }
 .visit select {
-  width: 170px;
+  width: 260px;
   box-sizing: border-box;
 }
 .visit-more-btn {
