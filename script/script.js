@@ -218,6 +218,7 @@ navbar.addEventListener('click', (event) => {
                 password: password
             };
 
+
             const authOptions = {
                 method: 'POST',
                 url: 'http://cards.danit.com.ua/login',
