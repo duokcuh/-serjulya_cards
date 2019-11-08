@@ -50,6 +50,7 @@ body {
 }
 
 .login-btn:hover {
+    cursor: pointer;
     background-color: black;
     color: white;
     transition: 0.8s;
@@ -100,6 +101,7 @@ body {
 }
 
 .search-btn {
+    cursor: pointer;
     width: 130px;
     height: 50px;
     border: none;
