@@ -28,9 +28,9 @@ class Visit {
     const editMenu = document.createElement('ul');
     editMenu.className = 'visit-edit-menu';
     editMenu.innerHTML = `<ul>
-            <li><button id="visit-close">Завершить</button></li>
-            <li><button id="visit-edit">Редактировать</button></li>
-            <li><button id="visit-delete">Удалить</button></li>
+            <li><button class="visit-close">Завершить</button></li>
+            <li><button class="visit-edit">Редактировать</button></li>
+            <li><button class="visit-delete">Удалить</button></li>
         </ul>`;
     editMenu.hidden = true;
 
@@ -43,7 +43,6 @@ class Visit {
     container.append(this._visit);
     this._visit.append(visitFieldset, editVisitWrapper);
     editVisitWrapper.append(editBtn, editMenu);
-
 
 
     this.createInput(null, 'Пациент', 'text', this._patient, visitFieldset);
@@ -71,7 +70,7 @@ class Visit {
     return visitFieldset;
   }
 
-  createInput (dataHidden, labelText, type = 'text', content, container) {
+  createInput(dataHidden, labelText, type = 'text', content, container) {
     const elem = document.createElement('p');
     elem.className = 'visit-field';
     elem.dataset.hidden = dataHidden;
@@ -79,14 +78,15 @@ class Visit {
     container.append(elem);
   }
 
-  createTextarea (dataHidden, labelText, content, container) {
+  createTextarea(dataHidden, labelText, content, container) {
     const elem = document.createElement('p');
     elem.className = 'visit-field';
     elem.dataset.hidden = dataHidden;
     elem.innerHTML = `<label>${labelText}</label><textarea rows="3">${content}</textarea>`;
     container.append(elem);
   }
-  toggleHidden () {
+
+  toggleHidden() {
     const hiddenFields = this._visit.querySelectorAll('[data-hidden]');
     hiddenFields.forEach(elem => {
       if (elem.dataset.hidden === 'true') elem.classList.add('visit-field-hide')
@@ -123,6 +123,7 @@ class VisitCardio extends Visit {
     this._diseases = diseases;
     this._age = age;
   }
+
   render(container) {
     const visitFieldset = super.render(container);
     this.createInput(true, 'Давление', 'text', this._pressure, visitFieldset);
@@ -138,6 +139,7 @@ class VisitDentist extends Visit {
     super(...args);
     this._lastVisit = lastVisit;
   }
+
   render(container) {
     const visitFieldset = super.render(container);
     this.createInput(true, 'Последний визит', 'date', this._lastVisit, visitFieldset);
@@ -151,6 +153,7 @@ class VisitTherapist extends Visit {
     this._age = age;
 
   }
+
   render(container) {
     const visitFieldset = super.render(container);
     this.createInput(true, 'Возраст', 'number', this._age, visitFieldset);
@@ -162,12 +165,8 @@ class VisitTherapist extends Visit {
 const cardioTest = new VisitCardio(pressure = 12, massIndex = 35, diseases = 'не болел', age = 45, id = 66, patient = 'Афанасий Сигизмундович Скоробогатько', doctor = 'кардиолог', title = 'аритмия', description = 'постоянная боль в сердце и высокое давление', priority = 'Низкая', status = 'открыт');
 const cardsContainer = document.getElementById('cards-container');
 cardioTest.render(cardsContainer);
+
 /*--------------------------*/
-
-
-
-
-
 
 
 class Form {
@@ -368,7 +367,6 @@ class Modal {
 const navbar = document.querySelector('.navbar');
 navbar.addEventListener('click', (event) => {
   event.preventDefault();
-debugger;
   if (event.target.id === 'login-btn') {
 
     const entryModal = new Modal("modal-wrapper", `<h2 class="modal-title">Авторизация</h2><div class="modal-close">X</div>`, '');
@@ -392,11 +390,11 @@ debugger;
         password: password
       };
 
-            const authOptions = {
-                method: 'POST',
-                url: 'http://cards.danit.com.ua/login',
-                data: JSON.stringify(data),
-            };
+      const authOptions = {
+        method: 'POST',
+        url: 'http://cards.danit.com.ua/login',
+        data: JSON.stringify(data),
+      };
 
       axios(authOptions)
         .then(function (response) {
@@ -540,8 +538,6 @@ window.addEventListener('load', () => {
 });
 
 
-
-
 class visitForm extends Form {
   constructor(...args) {
     super(...args);
@@ -609,7 +605,7 @@ class visitFormDentist extends visitForm {
       let priority = priorityInput.value;
       let date = dateInputs.value;
 
-      const visitDentist = new VisitDentist(date, '', name, "Стоматолог", title, description,  priority, 'Активен');
+      const visitDentist = new VisitDentist(date, '', name, "Стоматолог", title, description, priority, 'Активен');
       const cardsContainer = document.getElementById('cards-container');
       visitDentist.render(cardsContainer);
     });
@@ -643,19 +639,53 @@ class visitFormTerapevt extends visitForm {
 
     let visitForms = document.getElementById('visit-form');
     visitForms.addEventListener('submit', function (event) {
-        event.preventDefault();
-        const modalBg = document.getElementsByClassName('entry-modal-bg');
-        modalBg[0].remove();
+      event.preventDefault();
+      const modalBg = document.getElementsByClassName('entry-modal-bg');
+      modalBg[0].remove();
 
-        let name = nameInput.value;
-        let title = titleInput.value;
-        let description = descriptionInput.value;
-        let priority = priorityInput.value;
-        let age = ageInputs.value;
+      let name = nameInput.value;
+      let title = titleInput.value;
+      let description = descriptionInput.value;
+      let priority = priorityInput.value;
+      let age = ageInputs.value;
 
-        const visitTherapist = new VisitTherapist(age, '', name, "Терапевт", title, description,  priority, 'Активен');
-        const cardsContainer = document.getElementById('cards-container');
-        visitTherapist.render(cardsContainer);
+      const visitTherapist = new VisitTherapist(age, '', name, "Терапевт", title, description, priority, 'Активен');
+      const cardsContainer = document.getElementById('cards-container');
+
+
+      const content = {
+        name: name,
+        title: title,
+        description: description,
+        priority: priority,
+        age: age
+      };
+
+      const token = `5747ac45350e`;
+
+      const autorization = {
+        Authorization: `Bearer ${token}`
+      };
+
+      const authOptions = {
+        method: 'POST',
+        url: 'http://cards.danit.com.ua/cards',
+        data: JSON.stringify(content),
+        headers: autorization
+      };
+
+      axios(authOptions)
+        .then(function (response) {
+          console.log(response);
+          console.log(response.data);
+
+          if (response.data.status === "Success") {
+            visitTherapist.render(cardsContainer);
+            console.log(response);
+            console.log(response.data);
+          }
+        });
+
     });
 
   }
@@ -707,7 +737,7 @@ class visitFormCardiolog extends visitForm {
       let disease = diseaseInputs.value;
       let age = ageInputs.value;
 
-      const visitCardiolog = new VisitCardio(pressure, weightIndex, disease, age, "", name, "Кардиолог", title,  description,  priority, 'Активен');
+      const visitCardiolog = new VisitCardio(pressure, weightIndex, disease, age, "", name, "Кардиолог", title, description, priority, 'Активен');
       console.log(visitCardiolog);
 
       const cardsContainer = document.getElementById('cards-container');
@@ -718,4 +748,52 @@ class visitFormCardiolog extends visitForm {
 }
 
 
+// AXIOS GET REQUEST CARDS
 
+// const token = `5747ac45350e`;
+//
+// const autorization = {
+//   Authorization: `Bearer ${token}`
+// };
+//
+// const authOptions = {
+//   method: 'GET',
+//   url: 'http://cards.danit.com.ua/cards',
+//   // data: JSON.stringify(),
+//   headers: autorization
+// };
+//
+// axios(authOptions)
+//   .then(function (response) {
+//     console.log(response);
+//     console.log(response.data);
+//
+//     if (response.data.status === "Success") {
+//
+//     }
+//     });
+
+// const token = `5747ac45350e`;
+//
+// const autorization = {
+//   Authorization: `Bearer ${token}`
+// };
+//
+// const authOptions = {
+//   method: 'DELETE',
+//   url: 'http://cards.danit.com.ua/cards/1360',
+//   // data: JSON.stringify(),
+//   headers: autorization
+// };
+//
+// axios(authOptions)
+//   .then(function (response) {
+//
+//
+//     if (response.data.status === "Success") {
+//       // visitTherapist.render(cardsContainer);
+//       console.log(response);
+//       console.log(response.data);
+//     }
+//
+// });
