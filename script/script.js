@@ -368,7 +368,7 @@ class Modal {
 const navbar = document.querySelector('.navbar');
 navbar.addEventListener('click', (event) => {
   event.preventDefault();
-
+debugger;
   if (event.target.id === 'login-btn') {
 
     const entryModal = new Modal("modal-wrapper", `<h2 class="modal-title">Авторизация</h2><div class="modal-close">X</div>`, '');
@@ -379,10 +379,11 @@ navbar.addEventListener('click', (event) => {
 
     const registration = new registrationForm();
     registration.render();
+    const registerFormSubmit = document.getElementById('registration-form');
 
-    const registerBtn = document.getElementById('register-btn');
+    registerFormSubmit.addEventListener('submit', function (eventSubmit) {
+      eventSubmit.preventDefault();
 
-    registerBtn.addEventListener('click', function () {
       const email = document.getElementById('email-input').value;
       const password = document.getElementById('password-input').value;
 
