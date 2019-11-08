@@ -119,3 +119,7 @@ body {
     transition: 0.8s;
 }
 
+.form-select {
+    display: inline-block;
+    height: 30px;
+}
