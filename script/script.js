@@ -1,54 +1,56 @@
 class Visit {
-  constructor(id, patient, doctor, doctorName, title, description = '', priority, status) {
+  constructor(id, patient, doctor, title, description = '', priority) {
     this._id = id;
     this._patient = patient;
     this._doctor = doctor;
-    this._doctorName = doctorName;
     this._title = title;
     this._description = description;
     this._priority = priority;
-    this._status = status;
+    this._status = 'активен';
+    this._visit = document.createElement('form');
+
   }
 
   render(container) {
-    const visit = document.createElement('form');
-    visit.className = 'visit';
+
+    this._visit.className = 'visit';
     const visitFieldset = document.createElement('fieldset');
     visitFieldset.setAttribute('disabled', 'disabled');
-    const editVisit = document.createElement('select');
-    editVisit.className = 'visit-edit-select';
-    editVisit.dataset.hidden = 'true';
-    editVisit.innerHTML = `<select>
-                <option value="done">Завершить</option>
-                <option value="edit" selected>Редактировать</option>
-                <option value="delete">Удалить</option>
-            </select>`;
-    const moreBtn = document.createElement('button');
-    moreBtn.className = 'visit-more-btn';
-    moreBtn.innerText = 'Показать больше';
+
+    const editVisitWrapper = document.createElement('div');
+    editVisitWrapper.className = 'visit-edit-wrapper';
+
+    const editBtn = document.createElement('button');
+    editBtn.className = 'visit-edit-btn';
+    editBtn.dataset.hidden = 'true';
+    editBtn.innerText = 'Редактировать';
+
+    const editMenu = document.createElement('ul');
+    editMenu.className = 'visit-edit-menu';
+    editMenu.innerHTML = `<ul>
+            <li><button id="visit-close">Завершить</button></li>
+            <li><button id="visit-edit">Редактировать</button></li>
+            <li><button id="visit-delete">Удалить</button></li>
+        </ul>`;
+    editMenu.hidden = true;
+
+    editBtn.onclick = event => {
+      event.preventDefault();
+      editMenu.hidden = !editMenu.hidden;
+    };
 
 
-    container.append(visit);
-    visit.append(visitFieldset, editVisit, moreBtn);
+    container.append(this._visit);
+    this._visit.append(visitFieldset, editVisitWrapper);
+    editVisitWrapper.append(editBtn, editMenu);
 
-    const patient = document.createElement('p');
-    patient.className = 'visit-field';
-    patient.innerHTML = `<label>Пациент</label><input type="text" value="${this._patient}">`;
-    const doctor = document.createElement('p');
-    doctor.className = 'visit-field';
-    doctor.innerHTML = `<label>Доктор</label><input type="text" value="${this._doctor}">`;
-    const doctorName = document.createElement('p');
-    doctorName.className = 'visit-field';
-    doctorName.dataset.hidden = 'true';
-    doctorName.innerHTML = `<label>Имя доктора</label><input type="text" value="${this._doctorName}">`;
-    const title = document.createElement('p');
-    title.className = 'visit-field';
-    title.dataset.hidden = 'true';
-    title.innerHTML = `<label>Цель визита</label><input type="text" value="${this._title}">`;
-    const description = document.createElement('p');
-    description.className = 'visit-field';
-    description.dataset.hidden = 'true';
-    description.innerHTML = `<label>Комментарий</label><textarea rows="3">${this._description}</textarea>`;
+
+
+    this.createInput(null, 'Пациент', 'text', this._patient, visitFieldset);
+    this.createInput(null, 'Доктор', 'text', this._doctor, visitFieldset);
+    this.createInput(true, 'Цель визита', 'text', this._title, visitFieldset);
+    this.createTextarea(true, 'Комментарий', this._description, visitFieldset);
+
     const priority = document.createElement('p');
     priority.className = 'visit-field';
     priority.dataset.hidden = 'true';
@@ -64,13 +66,36 @@ class Visit {
                 <option>${this._status}</option>
                 <option>${this._status === 'открыт' ? 'завершен' : 'открыт'}</option>
             </select>`;
+    visitFieldset.append(priority, status);
 
-    visitFieldset.append(patient, doctor, doctorName, title, description, priority, status);
+    return visitFieldset;
+  }
 
-    const hiddenFields = visit.querySelectorAll('[data-hidden]');
+  createInput (dataHidden, labelText, type = 'text', content, container) {
+    const elem = document.createElement('p');
+    elem.className = 'visit-field';
+    elem.dataset.hidden = dataHidden;
+    elem.innerHTML = `<label>${labelText}</label><input type=${type} value="${content}">`;
+    container.append(elem);
+  }
+
+  createTextarea (dataHidden, labelText, content, container) {
+    const elem = document.createElement('p');
+    elem.className = 'visit-field';
+    elem.dataset.hidden = dataHidden;
+    elem.innerHTML = `<label>${labelText}</label><textarea rows="3">${content}</textarea>`;
+    container.append(elem);
+  }
+  toggleHidden () {
+    const hiddenFields = this._visit.querySelectorAll('[data-hidden]');
     hiddenFields.forEach(elem => {
-      if (elem.dataset.hidden === 'true') elem.classList.add('visit-field-hide');
+      if (elem.dataset.hidden === 'true') elem.classList.add('visit-field-hide')
     });
+
+    const moreBtn = document.createElement('button');
+    moreBtn.className = 'visit-more-btn';
+    moreBtn.innerText = 'Показать больше';
+    this._visit.append(moreBtn);
 
     moreBtn.onclick = event => {
       event.preventDefault();
@@ -85,9 +110,7 @@ class Visit {
           moreBtn.innerText = 'Показать больше';
         }
       })
-    };
-
-    return visitFieldset;
+    }
   }
 
 }
@@ -100,51 +123,25 @@ class VisitCardio extends Visit {
     this._diseases = diseases;
     this._age = age;
   }
-
   render(container) {
-    const pressure = document.createElement('p');
-    pressure.className = 'visit-field';
-    pressure.dataset.hidden = 'true';
-    pressure.innerHTML = `<label>Давление</label><input type="number" value=${this._pressure}>`;
-    const massIndex = document.createElement('p');
-    massIndex.className = 'visit-field';
-    massIndex.dataset.hidden = 'true';
-    massIndex.innerHTML = `<label>Индекс массы тела</label><input type="number" value=${this._massIndex}>`;
-    const diseases = document.createElement('p');
-    diseases.className = 'visit-field';
-    diseases.dataset.hidden = 'true';
-    diseases.innerHTML = `<label>Заболевания</label><textarea rows="3">${this._diseases}</textarea>`;
-    const age = document.createElement('p');
-    age.className = 'visit-field';
-    age.dataset.hidden = 'true';
-    age.innerHTML = `<label>Возраст</label><input type="number" value=${this._age}>`;
-
-
-    super.render(container).append(pressure, massIndex, diseases, age);
-
+    const visitFieldset = super.render(container);
+    this.createInput(true, 'Давление', 'text', this._pressure, visitFieldset);
+    this.createInput(true, 'Индекс массы тела', 'number', this._massIndex, visitFieldset);
+    this.createTextarea(true, 'Заболевания', this._diseases, visitFieldset);
+    this.createInput(true, 'Возраст', 'number', this._age, visitFieldset);
+    this.toggleHidden();
   }
 }
-
-const cardioTest = new VisitCardio(pressure = 12, massIndex = 35, diseases = 'не болел', age = 45, id = 66, patient = 'Афанасий Сигизмундович Скоробогатько', doctor = 'кардиолог', doctorName = "Абурбушметов Степан Петрович", title = 'аритмия', description = 'постоянная боль в сердце и высокое давление', priority = 'Низкая', status = 'открыт');
-const cardsContainer = document.getElementById('cards-container');
-cardioTest.render(cardsContainer);
-
-// console.log(cardioTest);
-
 
 class VisitDentist extends Visit {
   constructor(lastVisit, ...args) {
     super(...args);
     this._lastVisit = lastVisit;
   }
-
   render(container) {
-    const lastVisit = document.createElement('p');
-    lastVisit.className = 'visit-field';
-    lastVisit.dataset.hidden = 'true';
-    lastVisit.innerHTML = `<label>Давление</label><input type="date" value=${this._lastVisit}>`;
-
-    super.render(container).append(lastVisit);
+    const visitFieldset = super.render(container);
+    this.createInput(true, 'Последний визит', 'date', this._lastVisit, visitFieldset);
+    this.toggleHidden();
   }
 }
 
@@ -152,17 +149,20 @@ class VisitTherapist extends Visit {
   constructor(age, ...args) {
     super(...args);
     this._age = age;
+
   }
-
   render(container) {
-    const age = document.createElement('p');
-    age.className = 'visit-field';
-    age.dataset.hidden = 'true';
-    age.innerHTML = `<label>Возраст</label><input type="number" value=${this._age}>`;
-
-    super.render(container).append(age);
+    const visitFieldset = super.render(container);
+    this.createInput(true, 'Возраст', 'number', this._age, visitFieldset);
+    this.toggleHidden();
   }
 }
+
+/*----- only for example-----*/
+const cardioTest = new VisitCardio(pressure = 12, massIndex = 35, diseases = 'не болел', age = 45, id = 66, patient = 'Афанасий Сигизмундович Скоробогатько', doctor = 'кардиолог', title = 'аритмия', description = 'постоянная боль в сердце и высокое давление', priority = 'Низкая', status = 'открыт');
+const cardsContainer = document.getElementById('cards-container');
+cardioTest.render(cardsContainer);
+/*--------------------------*/
 
 
 
@@ -215,7 +215,7 @@ class registrationForm extends Form {
   render() {
     const emailInput = new Input('email', 'Введите адрес почты*', "email", "", 'true', 'email-input', 'input');
     const passwordInput = new Input('password', 'Введите пароль*', "password", "", 'true', 'password-input', 'input');
-    const submitBtn = new Input('button', '', "", "Submit", '', 'register-btn', 'submit-btn');
+    const submitBtn = new Input('submit', '', "", "Подтвердить", '', 'register-btn', 'submit-btn');
 
     const registrationForm = document.getElementById('registration-form');
     emailInput.render(registrationForm);
@@ -367,8 +367,6 @@ class Modal {
 
 const navbar = document.querySelector('.navbar');
 navbar.addEventListener('click', (event) => {
-
-
   event.preventDefault();
 
   if (event.target.id === 'login-btn') {
@@ -566,8 +564,6 @@ class visitForm extends Form {
     this._priorityInput = new Input('text', 'Срочность*', "priority", "", 'true', 'priority-input', 'input');
     this._fullNameInput = new Input('text', 'ФИО*', "fullName", "", 'true', 'name-input', 'input');
 
-    console.dir(this._fullNameInput);
-
     const visitForm = document.getElementById('visit-form');
     this._titleInput.render(visitForm);
     this._descriptionInput.render(visitForm);
@@ -585,12 +581,39 @@ class visitFormDentist extends visitForm {
 
   render() {
     super.render();
-    const dateInput = new Input('text', 'Дата последнего посещения*', "date", "", 'true', '', 'input');
-    const submitBtn = new Input('button', '', "", "Submit", '', '', 'submit-btn');
+    const dateInput = new Input('date', 'Дата последнего посещения*', "date", "", 'true', 'date-input', 'input');
+    const submitBtn = new Input('submit', '', "", "Подтвердить", '', '', 'submit-btn');
 
     const visitForm = document.getElementById('visit-form');
     dateInput.render(visitForm);
     submitBtn.render(visitForm);
+
+
+    const nameInput = document.getElementById('name-input');
+    const titleInput = document.getElementById('title-input');
+    const descriptionInput = document.getElementById('description-input');
+    const priorityInput = document.getElementById('priority-input');
+    const dateInputs = document.getElementById('date-input');
+
+
+    let visitForms = document.getElementById('visit-form');
+    visitForms.addEventListener('submit', function (event) {
+      event.preventDefault();
+      const modalBg = document.getElementsByClassName('entry-modal-bg');
+      modalBg[0].remove();
+
+      let name = nameInput.value;
+      let title = titleInput.value;
+      let description = descriptionInput.value;
+      let priority = priorityInput.value;
+      let date = dateInputs.value;
+
+      const visitDentist = new VisitDentist(date, '', name, "Стоматолог", title, description,  priority, 'Активен');
+      const cardsContainer = document.getElementById('cards-container');
+      visitDentist.render(cardsContainer);
+    });
+
+
   }
 }
 
@@ -604,7 +627,7 @@ class visitFormTerapevt extends visitForm {
   render() {
     super.render();
     const ageInput = new Input('number', 'Возраст*', "age", "", 'true', 'age-input', 'input');
-    const submitBtn = new Input('button', '', "", "Submit", '', 'terapevt-create-btn', 'submit-btn');
+    const submitBtn = new Input('submit', '', "", "Подтвердить", '', 'terapevt-create-btn', 'submit-btn');
 
     const visitForm = document.getElementById('visit-form');
     ageInput.render(visitForm);
@@ -617,18 +640,21 @@ class visitFormTerapevt extends visitForm {
     const ageInputs = document.getElementById('age-input');
 
 
-    const btn = document.getElementById('terapevt-create-btn');
-    btn.addEventListener('click', function () {
+    let visitForms = document.getElementById('visit-form');
+    visitForms.addEventListener('submit', function (event) {
+        event.preventDefault();
+        const modalBg = document.getElementsByClassName('entry-modal-bg');
+        modalBg[0].remove();
 
-      let name = nameInput.value;
-      let title = titleInput.value;
-      let description = descriptionInput.value;
-      let priority = priorityInput.value;
-      let age = ageInputs.value;
+        let name = nameInput.value;
+        let title = titleInput.value;
+        let description = descriptionInput.value;
+        let priority = priorityInput.value;
+        let age = ageInputs.value;
 
-      const visitTherapist = new VisitTherapist(age, 1, name, title, description, priority);
-      const cardsContainer = document.getElementById('cards-container');
-      visitTherapist.render(cardsContainer);
+        const visitTherapist = new VisitTherapist(age, '', name, "Терапевт", title, description,  priority, 'Активен');
+        const cardsContainer = document.getElementById('cards-container');
+        visitTherapist.render(cardsContainer);
     });
 
   }
@@ -636,17 +662,17 @@ class visitFormTerapevt extends visitForm {
 
 
 class visitFormCardiolog extends visitForm {
-  constructor(id) {
-    super(id);
+  constructor(...args) {
+    super(...args);
   }
 
   render() {
     super.render();
-    const pressureInput = new Input('text', 'Обычное давление*', "pressure", "", 'true', '', 'input');
-    const weightIndexInput = new Input('text', 'Индекс массы тела*', "weightIndex", "", 'true', '', 'input');
-    const diseaseInput = new Input('text', 'Перенесенные заболевания сердечно-сосудистой системы*', "diseaseIndex", "", 'true', '', 'input');
-    const ageInput = new Input('number', 'Возраст*', "age", "", 'true', '', 'input');
-    const submitBtn = new Input('button', '', "", "Submit", '', '', 'submit-btn');
+    const pressureInput = new Input('text', 'Обычное давление*', "pressure", "", 'true', 'pressure-input', 'input');
+    const weightIndexInput = new Input('text', 'Индекс массы тела*', "weightIndex", "", 'true', 'weight-index-input', 'input');
+    const diseaseInput = new Input('text', 'Перенесенные заболевания сердечно-сосудистой системы*', "diseaseIndex", "", 'true', 'disease-input', 'input');
+    const ageInput = new Input('number', 'Возраст*', "age", "", 'true', 'age-input', 'input');
+    const submitBtn = new Input('submit', '', "", "Подтвердить", '', 'cardiolog-create-btn', 'submit-btn');
 
     const visitForm = document.getElementById('visit-form');
     pressureInput.render(visitForm);
@@ -654,171 +680,41 @@ class visitFormCardiolog extends visitForm {
     diseaseInput.render(visitForm);
     ageInput.render(visitForm);
     submitBtn.render(visitForm);
+
+    const nameInput = document.getElementById('name-input');
+    const titleInput = document.getElementById('title-input');
+    const descriptionInput = document.getElementById('description-input');
+    const priorityInput = document.getElementById('priority-input');
+    const pressureInputs = document.getElementById('pressure-input');
+    const weightIndexInputs = document.getElementById('weight-index-input');
+    const diseaseInputs = document.getElementById('disease-input');
+    const ageInputs = document.getElementById('age-input');
+
+
+    let visitForms = document.getElementById('visit-form');
+    visitForms.addEventListener('submit', function (event) {
+      event.preventDefault();
+      const modalBg = document.getElementsByClassName('entry-modal-bg');
+      modalBg[0].remove();
+
+      let name = nameInput.value;
+      let title = titleInput.value;
+      let description = descriptionInput.value;
+      let priority = priorityInput.value;
+      let pressure = pressureInputs.value;
+      let weightIndex = weightIndexInputs.value;
+      let disease = diseaseInputs.value;
+      let age = ageInputs.value;
+
+      const visitCardiolog = new VisitCardio(pressure, weightIndex, disease, age, "", name, "Кардиолог", title,  description,  priority, 'Активен');
+      console.log(visitCardiolog);
+
+      const cardsContainer = document.getElementById('cards-container');
+      visitCardiolog.render(cardsContainer);
+    });
+
   }
 }
 
 
-class Visit {
-    constructor(id, patient, doctor, title, description = '', priority) {
-        this._id = id;
-        this._patient = patient;
-        this._doctor = doctor;
-        this._title = title;
-        this._description = description;
-        this._priority = priority;
-        this._status = 'активен';
-        this._visit = document.createElement('form');
 
-    }
-
-    render(container) {
-
-        this._visit.className = 'visit';
-        const visitFieldset = document.createElement('fieldset');
-        visitFieldset.setAttribute('disabled', 'disabled');
-
-        const editVisitWrapper = document.createElement('div');
-        editVisitWrapper.className = 'visit-edit-wrapper';
-
-        const editBtn = document.createElement('button');
-        editBtn.className = 'visit-edit-btn';
-        editBtn.dataset.hidden = 'true';
-        editBtn.innerText = 'Редактировать';
-
-        const editMenu = document.createElement('ul');
-        editMenu.className = 'visit-edit-menu';
-        editMenu.innerHTML = `<ul>
-            <li><button id="visit-close">Завершить</button></li>
-            <li><button id="visit-edit">Редактировать</button></li>
-            <li><button id="visit-delete">Удалить</button></li>
-        </ul>`;
-        editMenu.hidden = true;
-
-        editBtn.onclick = event => {
-            event.preventDefault();
-            editMenu.hidden = !editMenu.hidden;
-        };
-
-
-        container.append(this._visit);
-        this._visit.append(visitFieldset, editVisitWrapper);
-        editVisitWrapper.append(editBtn, editMenu);
-
-
-
-        this.createInput(null, 'Пациент', 'text', this._patient, visitFieldset);
-        this.createInput(null, 'Доктор', 'text', this._doctor, visitFieldset);
-        this.createInput(true, 'Цель визита', 'text', this._title, visitFieldset);
-        this.createTextarea(true, 'Комментарий', this._description, visitFieldset);
-
-        const priority = document.createElement('p');
-        priority.className = 'visit-field';
-        priority.dataset.hidden = 'true';
-        priority.innerHTML = `<label>Срочность</label><select>
-                <option>${this._priority}</option>
-                <option>${this._priority === 'Высокая' ? 'Обычная' : 'Высокая'}</option>
-                <option>${this._priority === 'Низкая' ? 'Обычная' : 'Низкая'}</option>
-            </select>`;
-        const status = document.createElement('p');
-        status.className = 'visit-field';
-        status.dataset.hidden = 'true';
-        status.innerHTML = `<label>Статус</label><select>
-                <option>${this._status}</option>
-                <option>${this._status === 'открыт' ? 'завершен' : 'открыт'}</option>
-            </select>`;
-        visitFieldset.append(priority, status);
-
-        return visitFieldset;
-    }
-
-    createInput (dataHidden, labelText, type = 'text', content, container) {
-        const elem = document.createElement('p');
-        elem.className = 'visit-field';
-        elem.dataset.hidden = dataHidden;
-        elem.innerHTML = `<label>${labelText}</label><input type=${type} value="${content}">`;
-        container.append(elem);
-    }
-
-    createTextarea (dataHidden, labelText, content, container) {
-        const elem = document.createElement('p');
-        elem.className = 'visit-field';
-        elem.dataset.hidden = dataHidden;
-        elem.innerHTML = `<label>${labelText}</label><textarea rows="3">${content}</textarea>`;
-        container.append(elem);
-    }
-    toggleHidden () {
-        const hiddenFields = this._visit.querySelectorAll('[data-hidden]');
-        hiddenFields.forEach(elem => {
-            if (elem.dataset.hidden === 'true') elem.classList.add('visit-field-hide')
-        });
-
-        const moreBtn = document.createElement('button');
-        moreBtn.className = 'visit-more-btn';
-        moreBtn.innerText = 'Показать больше';
-        this._visit.append(moreBtn);
-
-        moreBtn.onclick = event => {
-            event.preventDefault();
-            hiddenFields.forEach(elem => {
-                if (elem.dataset.hidden === 'true') {
-                    elem.dataset.hidden = 'false';
-                    elem.classList.remove('visit-field-hide');
-                    moreBtn.innerText = 'Скрыть';
-                } else if (elem.dataset.hidden === 'false') {
-                    elem.dataset.hidden = 'true';
-                    elem.classList.add('visit-field-hide');
-                    moreBtn.innerText = 'Показать больше';
-                }
-            })
-        }
-    }
-
-}
-
-class VisitCardio extends Visit {
-    constructor(pressure, massIndex, diseases, age, ...args) {
-        super(...args);
-        this._pressure = pressure;
-        this._massIndex = massIndex;
-        this._diseases = diseases;
-        this._age = age;
-    }
-    render(container) {
-        const visitFieldset = super.render(container);
-        this.createInput(true, 'Давление', 'number', this._pressure, visitFieldset);
-        this.createInput(true, 'Индекс массы тела', 'number', this._massIndex, visitFieldset);
-        this.createTextarea(true, 'Заболевания', this._diseases, visitFieldset);
-        this.createInput(true, 'Возраст', 'number', this._age, visitFieldset);
-        this.toggleHidden();
-    }
-}
-
-class VisitDentist extends Visit {
-    constructor(lastVisit, ...args) {
-        super(...args);
-        this._lastVisit = lastVisit;
-    }
-    render(container) {
-        const visitFieldset = super.render(container);
-        this.createInput(true, 'Последний визит', 'date', this._lastVisit, visitFieldset);
-        this.toggleHidden();
-    }
-}
-
-class VisitTherapist extends Visit {
-    constructor(age, ...args) {
-        super(...args);
-        this._age = age;
-    }
-    render(container) {
-        const visitFieldset = super.render(container);
-        this.createInput(true, 'Возраст', 'number', this._age, visitFieldset);
-        this.toggleHidden();
-    }
-}
-
-/*----- only for example-----*/
-const cardioTest = new VisitCardio(pressure = 12, massIndex = 35, diseases = 'не болел', age = 45, id = 66, patient = 'Афанасий Сигизмундович Скоробогатько', doctor = 'кардиолог', title = 'аритмия', description = 'постоянная боль в сердце и высокое давление', priority = 'Низкая', status = 'открыт');
-const cardsContainer = document.getElementById('cards-container');
-cardioTest.render(cardsContainer);
-/*--------------------------*/
