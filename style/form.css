@@ -24,6 +24,7 @@
 }
 
 .submit-btn {
+    cursor: pointer;
     text-align: center;
     margin: 0 auto;
     display: inline-block;
@@ -35,13 +36,11 @@
     border: none;
     outline: none;
     font-size: 16px;
-    cursor: pointer;
     padding: 10px;
 }
 
 .submit-btn:hover {
     background-color: darkblue;
-    cursor: pointer;
     color: white;
     transition: 0.8s;
 }

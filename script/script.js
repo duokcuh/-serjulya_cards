@@ -1,3 +1,175 @@
+class Visit {
+  constructor(id, patient, doctor, doctorName, title, description = '', priority, status) {
+    this._id = id;
+    this._patient = patient;
+    this._doctor = doctor;
+    this._doctorName = doctorName;
+    this._title = title;
+    this._description = description;
+    this._priority = priority;
+    this._status = status;
+  }
+
+  render(container) {
+    const visit = document.createElement('form');
+    visit.className = 'visit';
+    const visitFieldset = document.createElement('fieldset');
+    visitFieldset.setAttribute('disabled', 'disabled');
+    const editVisit = document.createElement('select');
+    editVisit.className = 'visit-edit-select';
+    editVisit.dataset.hidden = 'true';
+    editVisit.innerHTML = `<select>
+                <option value="done">Завершить</option>
+                <option value="edit" selected>Редактировать</option>
+                <option value="delete">Удалить</option>
+            </select>`;
+    const moreBtn = document.createElement('button');
+    moreBtn.className = 'visit-more-btn';
+    moreBtn.innerText = 'Показать больше';
+
+
+    container.append(visit);
+    visit.append(visitFieldset, editVisit, moreBtn);
+
+    const patient = document.createElement('p');
+    patient.className = 'visit-field';
+    patient.innerHTML = `<label>Пациент</label><input type="text" value="${this._patient}">`;
+    const doctor = document.createElement('p');
+    doctor.className = 'visit-field';
+    doctor.innerHTML = `<label>Доктор</label><input type="text" value="${this._doctor}">`;
+    const doctorName = document.createElement('p');
+    doctorName.className = 'visit-field';
+    doctorName.dataset.hidden = 'true';
+    doctorName.innerHTML = `<label>Имя доктора</label><input type="text" value="${this._doctorName}">`;
+    const title = document.createElement('p');
+    title.className = 'visit-field';
+    title.dataset.hidden = 'true';
+    title.innerHTML = `<label>Цель визита</label><input type="text" value="${this._title}">`;
+    const description = document.createElement('p');
+    description.className = 'visit-field';
+    description.dataset.hidden = 'true';
+    description.innerHTML = `<label>Комментарий</label><textarea rows="3">${this._description}</textarea>`;
+    const priority = document.createElement('p');
+    priority.className = 'visit-field';
+    priority.dataset.hidden = 'true';
+    priority.innerHTML = `<label>Срочность</label><select>
+                <option>${this._priority}</option>
+                <option>${this._priority === 'Высокая' ? 'Обычная' : 'Высокая'}</option>
+                <option>${this._priority === 'Низкая' ? 'Обычная' : 'Низкая'}</option>
+            </select>`;
+    const status = document.createElement('p');
+    status.className = 'visit-field';
+    status.dataset.hidden = 'true';
+    status.innerHTML = `<label>Статус</label><select>
+                <option>${this._status}</option>
+                <option>${this._status === 'открыт' ? 'завершен' : 'открыт'}</option>
+            </select>`;
+
+    visitFieldset.append(patient, doctor, doctorName, title, description, priority, status);
+
+    const hiddenFields = visit.querySelectorAll('[data-hidden]');
+    hiddenFields.forEach(elem => {
+      if (elem.dataset.hidden === 'true') elem.classList.add('visit-field-hide');
+    });
+
+    moreBtn.onclick = event => {
+      event.preventDefault();
+      hiddenFields.forEach(elem => {
+        if (elem.dataset.hidden === 'true') {
+          elem.dataset.hidden = 'false';
+          elem.classList.remove('visit-field-hide');
+          moreBtn.innerText = 'Скрыть';
+        } else if (elem.dataset.hidden === 'false') {
+          elem.dataset.hidden = 'true';
+          elem.classList.add('visit-field-hide');
+          moreBtn.innerText = 'Показать больше';
+        }
+      })
+    };
+
+    return visitFieldset;
+  }
+
+}
+
+class VisitCardio extends Visit {
+  constructor(pressure, massIndex, diseases, age, ...args) {
+    super(...args);
+    this._pressure = pressure;
+    this._massIndex = massIndex;
+    this._diseases = diseases;
+    this._age = age;
+  }
+
+  render(container) {
+    const pressure = document.createElement('p');
+    pressure.className = 'visit-field';
+    pressure.dataset.hidden = 'true';
+    pressure.innerHTML = `<label>Давление</label><input type="number" value=${this._pressure}>`;
+    const massIndex = document.createElement('p');
+    massIndex.className = 'visit-field';
+    massIndex.dataset.hidden = 'true';
+    massIndex.innerHTML = `<label>Индекс массы тела</label><input type="number" value=${this._massIndex}>`;
+    const diseases = document.createElement('p');
+    diseases.className = 'visit-field';
+    diseases.dataset.hidden = 'true';
+    diseases.innerHTML = `<label>Заболевания</label><textarea rows="3">${this._diseases}</textarea>`;
+    const age = document.createElement('p');
+    age.className = 'visit-field';
+    age.dataset.hidden = 'true';
+    age.innerHTML = `<label>Возраст</label><input type="number" value=${this._age}>`;
+
+
+    super.render(container).append(pressure, massIndex, diseases, age);
+
+  }
+}
+
+const cardioTest = new VisitCardio(pressure = 12, massIndex = 35, diseases = 'не болел', age = 45, id = 66, patient = 'Афанасий Сигизмундович Скоробогатько', doctor = 'кардиолог', doctorName = "Абурбушметов Степан Петрович", title = 'аритмия', description = 'постоянная боль в сердце и высокое давление', priority = 'Низкая', status = 'открыт');
+const cardsContainer = document.getElementById('cards-container');
+cardioTest.render(cardsContainer);
+
+// console.log(cardioTest);
+
+
+class VisitDentist extends Visit {
+  constructor(lastVisit, ...args) {
+    super(...args);
+    this._lastVisit = lastVisit;
+  }
+
+  render(container) {
+    const lastVisit = document.createElement('p');
+    lastVisit.className = 'visit-field';
+    lastVisit.dataset.hidden = 'true';
+    lastVisit.innerHTML = `<label>Давление</label><input type="date" value=${this._lastVisit}>`;
+
+    super.render(container).append(lastVisit);
+  }
+}
+
+class VisitTherapist extends Visit {
+  constructor(age, ...args) {
+    super(...args);
+    this._age = age;
+  }
+
+  render(container) {
+    const age = document.createElement('p');
+    age.className = 'visit-field';
+    age.dataset.hidden = 'true';
+    age.innerHTML = `<label>Возраст</label><input type="number" value=${this._age}>`;
+
+    super.render(container).append(age);
+  }
+}
+
+
+
+
+
+
+
 class Form {
   constructor(id = '') {
     this._id = id;
@@ -369,23 +541,39 @@ window.addEventListener('load', () => {
 });
 
 
+
+
 class visitForm extends Form {
-  constructor(id) {
-    super(id);
+  constructor(...args) {
+    super(...args);
+
   }
 
   render() {
-    // super.render();
-    const titleInput = new Input('text', 'Цель визита*', "purpose", "", 'true', '', 'input');
-    const descriptionInput = new Input('text', 'Краткое описание визита', "description", "", '', '', 'input');
-    const priorityInput = new Input('text', 'Срочность*', "priority", "", 'true', '', 'input');
-    const fullNameInput = new Input('text', 'ФИО*', "fullName", "", 'true', '', 'input');
+    // const titleInput = new Input('text', 'Цель визита*', "purpose", "", 'true', '', 'input');
+    // const descriptionInput = new Input('text', 'Краткое описание визита', "description", "", '', '', 'input');
+    // const priorityInput = new Input('text', 'Срочность*', "priority", "", 'true', '', 'input');
+    // const fullNameInput = new Input('text', 'ФИО*', "fullName", "", 'true', '', 'input');
+    //
+    // const visitForm = document.getElementById('visit-form');
+    // titleInput.render(visitForm);
+    // descriptionInput.render(visitForm);
+    // priorityInput.render(visitForm);
+    // fullNameInput.render(visitForm);
+
+    this._titleInput = new Input('text', 'Цель визита*', "purpose", "", 'true', 'title-input', 'input');
+    this._descriptionInput = new Input('text', 'Краткое описание визита', "description", "", '', 'description-input', 'input');
+    this._priorityInput = new Input('text', 'Срочность*', "priority", "", 'true', 'priority-input', 'input');
+    this._fullNameInput = new Input('text', 'ФИО*', "fullName", "", 'true', 'name-input', 'input');
+
+    console.dir(this._fullNameInput);
 
     const visitForm = document.getElementById('visit-form');
-    titleInput.render(visitForm);
-    descriptionInput.render(visitForm);
-    priorityInput.render(visitForm);
-    fullNameInput.render(visitForm);
+    this._titleInput.render(visitForm);
+    this._descriptionInput.render(visitForm);
+    this._priorityInput.render(visitForm);
+    this._fullNameInput.render(visitForm);
+
   }
 }
 
@@ -408,18 +596,41 @@ class visitFormDentist extends visitForm {
 
 
 class visitFormTerapevt extends visitForm {
-  constructor(id) {
-    super(id);
+  constructor(...args) {
+    super(...args);
+
   }
 
   render() {
     super.render();
-    const ageInput = new Input('number', 'Возраст*', "age", "", 'true', '', 'input');
-    const submitBtn = new Input('button', '', "", "Submit", '', '', 'submit-btn');
+    const ageInput = new Input('number', 'Возраст*', "age", "", 'true', 'age-input', 'input');
+    const submitBtn = new Input('button', '', "", "Submit", '', 'terapevt-create-btn', 'submit-btn');
 
     const visitForm = document.getElementById('visit-form');
     ageInput.render(visitForm);
     submitBtn.render(visitForm);
+
+    const nameInput = document.getElementById('name-input');
+    const titleInput = document.getElementById('title-input');
+    const descriptionInput = document.getElementById('description-input');
+    const priorityInput = document.getElementById('priority-input');
+    const ageInputs = document.getElementById('age-input');
+
+
+    const btn = document.getElementById('terapevt-create-btn');
+    btn.addEventListener('click', function () {
+
+      let name = nameInput.value;
+      let title = titleInput.value;
+      let description = descriptionInput.value;
+      let priority = priorityInput.value;
+      let age = ageInputs.value;
+
+      const visitTherapist = new VisitTherapist(age, 1, name, title, description, priority);
+      const cardsContainer = document.getElementById('cards-container');
+      visitTherapist.render(cardsContainer);
+    });
+
   }
 }
 
@@ -447,171 +658,10 @@ class visitFormCardiolog extends visitForm {
 }
 
 
-class Visit {
-  constructor(id, patient, doctor, doctorName, title, description = '', priority, status) {
-    this._id = id;
-    this._patient = patient;
-    this._doctor = doctor;
-    this._doctorName = doctorName;
-    this._title = title;
-    this._description = description;
-    this._priority = priority;
-    this._status = status;
-  }
-
-  render(container) {
-    const visit = document.createElement('form');
-    visit.className = 'visit';
-    const visitFieldset = document.createElement('fieldset');
-    visitFieldset.setAttribute('disabled', 'disabled');
-    const editVisit = document.createElement('select');
-    editVisit.className = 'visit-edit-select';
-    editVisit.dataset.hidden = 'true';
-    editVisit.innerHTML = `<select>
-                <option value="done">Завершить</option>
-                <option value="edit" selected>Редактировать</option>
-                <option value="delete">Удалить</option>
-            </select>`;
-    const moreBtn = document.createElement('button');
-    moreBtn.className = 'visit-more-btn';
-    moreBtn.innerText = 'Показать больше';
 
 
-    container.append(visit);
-    visit.append(visitFieldset, editVisit, moreBtn);
-
-    const patient = document.createElement('p');
-    patient.className = 'visit-field';
-    patient.innerHTML = `<label>Пациент</label><input type="text" value="${this._patient}">`;
-    const doctor = document.createElement('p');
-    doctor.className = 'visit-field';
-    doctor.innerHTML = `<label>Доктор</label><input type="text" value="${this._doctor}">`;
-    const doctorName = document.createElement('p');
-    doctorName.className = 'visit-field';
-    doctorName.dataset.hidden = 'true';
-    doctorName.innerHTML = `<label>Имя доктора</label><input type="text" value="${this._doctorName}">`;
-    const title = document.createElement('p');
-    title.className = 'visit-field';
-    title.dataset.hidden = 'true';
-    title.innerHTML = `<label>Цель визита</label><input type="text" value="${this._title}">`;
-    const description = document.createElement('p');
-    description.className = 'visit-field';
-    description.dataset.hidden = 'true';
-    description.innerHTML = `<label>Комментарий</label><textarea rows="3">${this._description}</textarea>`;
-    const priority = document.createElement('p');
-    priority.className = 'visit-field';
-    priority.dataset.hidden = 'true';
-    priority.innerHTML = `<label>Срочность</label><select>
-                <option>${this._priority}</option>
-                <option>${this._priority === 'Высокая' ? 'Обычная' : 'Высокая'}</option>
-                <option>${this._priority === 'Низкая' ? 'Обычная' : 'Низкая'}</option>
-            </select>`;
-    const status = document.createElement('p');
-    status.className = 'visit-field';
-    status.dataset.hidden = 'true';
-    status.innerHTML = `<label>Статус</label><select>
-                <option>${this._status}</option>
-                <option>${this._status === 'открыт' ? 'завершен' : 'открыт'}</option>
-            </select>`;
-
-    visitFieldset.append(patient, doctor, doctorName, title, description, priority, status);
-
-    const hiddenFields = visit.querySelectorAll('[data-hidden]');
-    hiddenFields.forEach(elem => {
-      if (elem.dataset.hidden === 'true') elem.classList.add('visit-field-hide');
-    });
-
-    moreBtn.onclick = event => {
-      event.preventDefault();
-      hiddenFields.forEach(elem => {
-        if (elem.dataset.hidden === 'true') {
-          elem.dataset.hidden = 'false';
-          elem.classList.remove('visit-field-hide');
-          moreBtn.innerText = 'Скрыть';
-        } else if (elem.dataset.hidden === 'false') {
-          elem.dataset.hidden = 'true';
-          elem.classList.add('visit-field-hide');
-          moreBtn.innerText = 'Показать больше';
-        }
-      })
-    };
-
-    return visitFieldset;
-  }
-
-}
-
-class VisitCardio extends Visit {
-  constructor(pressure, massIndex, diseases, age, ...args) {
-    super(...args);
-    this._pressure = pressure;
-    this._massIndex = massIndex;
-    this._diseases = diseases;
-    this._age = age;
-  }
-
-  render(container) {
-    const pressure = document.createElement('p');
-    pressure.className = 'visit-field';
-    pressure.dataset.hidden = 'true';
-    pressure.innerHTML = `<label>Давление</label><input type="number" value=${this._pressure}>`;
-    const massIndex = document.createElement('p');
-    massIndex.className = 'visit-field';
-    massIndex.dataset.hidden = 'true';
-    massIndex.innerHTML = `<label>Индекс массы тела</label><input type="number" value=${this._massIndex}>`;
-    const diseases = document.createElement('p');
-    diseases.className = 'visit-field';
-    diseases.dataset.hidden = 'true';
-    diseases.innerHTML = `<label>Заболевания</label><textarea rows="3">${this._diseases}</textarea>`;
-    const age = document.createElement('p');
-    age.className = 'visit-field';
-    age.dataset.hidden = 'true';
-    age.innerHTML = `<label>Возраст</label><input type="number" value=${this._age}>`;
 
 
-    super.render(container).append(pressure, massIndex, diseases, age);
-
-  }
-}
-
-const cardioTest = new VisitCardio(pressure = 12, massIndex = 35, diseases = 'не болел', age = 45, id = 66, patient = 'Афанасий Сигизмундович Скоробогатько', doctor = 'кардиолог', doctorName = "Абурбушметов Степан Петрович", title = 'аритмия', description = 'постоянная боль в сердце и высокое давление', priority = 'Низкая', status = 'открыт');
-const cardsContainer = document.getElementById('cards-container');
-cardioTest.render(cardsContainer);
-
-// console.log(cardioTest);
-
-
-class VisitDentist extends Visit {
-  constructor(lastVisit, ...args) {
-    super(...args);
-    this._lastVisit = lastVisit;
-  }
-
-  render(container) {
-    const lastVisit = document.createElement('p');
-    lastVisit.className = 'visit-field';
-    lastVisit.dataset.hidden = 'true';
-    lastVisit.innerHTML = `<label>Давление</label><input type="date" value=${this._lastVisit}>`;
-
-    super.render(container).append(lastVisit);
-  }
-}
-
-class VisitTherapist extends Visit {
-  constructor(age, ...args) {
-    super(...args);
-    this._age = age;
-  }
-
-  render(container) {
-    const age = document.createElement('p');
-    age.className = 'visit-field';
-    age.dataset.hidden = 'true';
-    age.innerHTML = `<label>Возраст</label><input type="number" value=${this._age}>`;
-
-    super.render(container).append(age);
-  }
-}
 
 
 
