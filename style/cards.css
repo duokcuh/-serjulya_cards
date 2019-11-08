@@ -1,3 +1,26 @@
+
+.wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /*display: none;*/
+}
+
+.cards-container {
+  display: none;
+  /*display: flex;*/
+  align-items: start;
+  margin-top: 40px;
+  border: 2px solid gray;
+  width: 80%;
+  height: 62vh;
+}
+
+.no-items {
+  font-size: 70px;
+  color: gray;
+}
+
 .visit {
   width: 400px;
   padding: 5px;
@@ -29,6 +52,10 @@
   float: right;
   margin: 2px;
 }
-.visit-edit-select {
+.visit-edit-wrapper {
+  display: inline-block;
+
+}
+.visit-edit-btn {
   margin: 2px;
 }
