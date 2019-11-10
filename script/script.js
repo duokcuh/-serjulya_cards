@@ -413,14 +413,14 @@ navbar.addEventListener('click', (event) => {
 
             const token = `5747ac45350e`;
 
-            const autorization = {
+            const authorization = {
               Authorization: `Bearer ${token}`
             };
 
             const authOptions = {
               method: 'GET',
               url: 'http://cards.danit.com.ua/cards',
-              headers: autorization
+              headers: authorization
             };
 
             axios(authOptions)
@@ -431,10 +431,6 @@ navbar.addEventListener('click', (event) => {
 
                 if (response.status >= 200 && response.status < 300) {
                   if (dataArr.length > 0) {
-                    dataArr.forEach(function (element) {
-                      console.log(element)
-                    });
-
                     dataArr.forEach(function (item) {
                       if (item.doctor === 'dentist') {
 
@@ -485,7 +481,7 @@ navbar.addEventListener('click', (event) => {
                     })
                   }
                 } else {
-                  return alert('Ведутся технические работы')
+                  return cardsContainer.innerHTML = `<div class="no-items">No items have been added</div>`;
                 }
               });
 
@@ -615,14 +611,14 @@ window.addEventListener('load', () => {
 
     const token = `5747ac45350e`;
 
-    const autorization = {
+    const authorization = {
       Authorization: `Bearer ${token}`
     };
 
     const authOptions = {
       method: 'GET',
       url: 'http://cards.danit.com.ua/cards',
-      headers: autorization
+      headers: authorization
     };
 
     axios(authOptions)
@@ -638,56 +634,56 @@ window.addEventListener('load', () => {
             });
 
             dataArr.forEach(function (item) {
-                if (item.doctor === 'dentist') {
+              if (item.doctor === 'dentist') {
 
-                  const nameD = item.name;
-                  const titleD = item.title;
-                  const descriptionD = item.description;
-                  const priorityD = item.priority;
-                  const dateD = item.date;
-                  const idD = item.id;
+                const nameD = item.name;
+                const titleD = item.title;
+                const descriptionD = item.description;
+                const priorityD = item.priority;
+                const dateD = item.date;
+                const idD = item.id;
 
-                  const visitDentist = new VisitDentist(dateD, idD, nameD, "Стоматолог", titleD, descriptionD, priorityD, 'Активен');
-                  visitDentist.render(cardsContainer);
+                const visitDentist = new VisitDentist(dateD, idD, nameD, "Стоматолог", titleD, descriptionD, priorityD, 'Активен');
+                visitDentist.render(cardsContainer);
 
-                }
-
-
-                if (item.doctor === 'cardiologist') {
+              }
 
 
-                  const nameC = item.name;
-                  const titleC = item.title;
-                  const descriptionC = item.description;
-                  const priorityC = item.priority;
-                  const ageC = item.age;
-                  const idC = item.id;
-                  const pressureC = item.pressure;
-                  const weightIndexC = item.weightIndex;
-                  const diseaseC = item.disease;
-
-                  const visitCardiolog = new VisitCardio(pressureC, weightIndexC, diseaseC, ageC, idC, nameC, "Кардиолог", titleC, descriptionC, priorityC, 'Активен');
-                  visitCardiolog.render(cardsContainer);
-                }
+              if (item.doctor === 'cardiologist') {
 
 
-                if (item.doctor === 'therapist') {
+                const nameC = item.name;
+                const titleC = item.title;
+                const descriptionC = item.description;
+                const priorityC = item.priority;
+                const ageC = item.age;
+                const idC = item.id;
+                const pressureC = item.pressure;
+                const weightIndexC = item.weightIndex;
+                const diseaseC = item.disease;
 
-                  const nameT = item.name;
-                  const titleT = item.title;
-                  const descriptionT = item.description;
-                  const priorityT = item.priority;
-                  const ageT = item.age;
-                  const idT = item.id;
+                const visitCardiolog = new VisitCardio(pressureC, weightIndexC, diseaseC, ageC, idC, nameC, "Кардиолог", titleC, descriptionC, priorityC, 'Активен');
+                visitCardiolog.render(cardsContainer);
+              }
 
-                  const visitTherapist = new VisitTherapist(ageT, idT, nameT, "Терапевт", titleT, descriptionT, priorityT, 'Активен');
-                  visitTherapist.render(cardsContainer);
+
+              if (item.doctor === 'therapist') {
+
+                const nameT = item.name;
+                const titleT = item.title;
+                const descriptionT = item.description;
+                const priorityT = item.priority;
+                const ageT = item.age;
+                const idT = item.id;
+
+                const visitTherapist = new VisitTherapist(ageT, idT, nameT, "Терапевт", titleT, descriptionT, priorityT, 'Активен');
+                visitTherapist.render(cardsContainer);
               }
 
             })
           }
         } else {
-          return alert('Ведутся технические работы')
+          return cardsContainer.innerHTML = `<div class="no-items">No items have been added</div>`;
         }
       });
   }
@@ -749,7 +745,6 @@ class visitFormDentist extends visitForm {
     const dateInputs = document.getElementById('date-input');
 
 
-
     visitForms.addEventListener('submit', function (event) {
       event.preventDefault();
 
@@ -797,6 +792,7 @@ class visitFormDentist extends visitForm {
 
             const visitDentist = new VisitDentist(date, dataId, name, "Стоматолог", title, description, priority, 'Активен');
             const cardsContainer = document.getElementById('cards-container');
+            cardsContainer.innerHTML = '';
             visitDentist.render(cardsContainer);
           } else {
             return alert('Ведутся технические работы')
@@ -878,6 +874,7 @@ class visitFormTerapevt extends visitForm {
 
             const visitTherapist = new VisitTherapist(age, dataId, name, "Терапевт", title, description, priority, 'Активен');
             const cardsContainer = document.getElementById('cards-container');
+            cardsContainer.innerHTML = '';
             visitTherapist.render(cardsContainer);
           } else {
             return alert('Ведутся технические работы')
@@ -918,10 +915,9 @@ class visitFormCardiolog extends visitForm {
     const ageInputs = document.getElementById('age-input');
 
 
-
-
     visitForms.addEventListener('submit', function (event) {
       event.preventDefault();
+
 
       const name = nameInput.value;
       const title = titleInput.value;
@@ -964,6 +960,7 @@ class visitFormCardiolog extends visitForm {
           console.log(response.data);
 
           if (response.status >= 200 && response.status < 300) {
+
             const dataId = response.data.id;
             console.log(dataId);
 
@@ -973,6 +970,7 @@ class visitFormCardiolog extends visitForm {
 
             const visitCardiolog = new VisitCardio(pressure, weightIndex, disease, age, dataId, name, "Кардиолог", title, description, priority, 'Активен');
             const cardsContainer = document.getElementById('cards-container');
+            cardsContainer.innerHTML = '';
             visitCardiolog.render(cardsContainer);
           } else {
             return alert('Ведутся технические работы')
@@ -988,7 +986,7 @@ class visitFormCardiolog extends visitForm {
 
 // const token = `5747ac45350e`;
 //
-// const autorization = {
+// const authorization = {
 //   Authorization: `Bearer ${token}`
 // };
 //
@@ -996,7 +994,7 @@ class visitFormCardiolog extends visitForm {
 //   method: 'GET',
 //   url: 'http://cards.danit.com.ua/cards',
 //   // data: JSON.stringify(),
-//   headers: autorization
+//   headers: authorization
 // };
 //
 // axios(authOptions)
@@ -1016,14 +1014,14 @@ class visitFormCardiolog extends visitForm {
 //
 // const token = `5747ac45350e`;
 //
-// const autorization = {
+// const authorization = {
 //   Authorization: `Bearer ${token}`
 // };
 //
 // const h = {
 //   method: 'DELETE',
 //   url: 'http://cards.danit.com.ua/cards/1384',
-//   headers: autorization
+//   headers: authorization
 // };
 //
 // axios(h)
@@ -1038,15 +1036,12 @@ class visitFormCardiolog extends visitForm {
 // });
 
 
-
-
-
 // AXIOS PUT REQUEST CARDS
 
 
 // const token = `5747ac45350e`;
 //
-// const autorization = {
+// const authorization = {
 //   Authorization: `Bearer ${token}`
 // };
 //
@@ -1054,7 +1049,7 @@ class visitFormCardiolog extends visitForm {
 //   method: 'DELETE',
 //   url: 'http://cards.danit.com.ua/cards/1360',
 //   // data: JSON.stringify(),
-//   headers: autorization
+//   headers: authorization
 // };
 //
 // axios(authOptions)
