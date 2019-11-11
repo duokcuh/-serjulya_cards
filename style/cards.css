@@ -1,64 +1,114 @@
 
 .wrapper {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  /*display: none;*/
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .cards-container {
-  display: none;
-  /*display: flex;*/
-  align-items: start;
-  margin-top: 40px;
-  padding: 20px;
-  border: 2px solid gray;
-  flex-wrap: wrap;
-  justify-content: center;
-  width: 80%;
-  /*height: 62vh;*/
+    display: none;
+    flex-wrap: wrap;
+    align-items: start;
+    margin-top: 40px;
+    padding: 20px;
+    border: 2px solid gray;
+    width: 80%;
+    /*height: 62vh;*/
+
 }
 
 .no-items {
-  font-size: 70px;
-  color: gray;
+    font-size: 70px;
+    color: gray;
 }
 
 .visit {
-  width: 400px;
-  padding: 5px;
-  margin: 5px;
-  border: 1px solid black;
-  border-radius: 5px;
+    width: 400px;
+    padding: 5px;
+    margin: 5px;
+    border: 1px solid grey;
+    border-radius: 5px;
+    background-image: url(../img/visit2.jpg);
+    background-size: cover;
 }
-.visit-field {
-  width: 100%;
-  padding: 2px;
-  display: flex;
-  justify-content: space-between;
-}
-.visit-field-hide {display: none;}
-.visit input {
-  width: 260px;
-  box-sizing: border-box;
-}
-.visit textarea {
-  width: 260px;
-  box-sizing: border-box;
-  resize: none;
-}
-.visit select {
-  width: 260px;
-  box-sizing: border-box;
-}
-.visit-more-btn {
-  float: right;
-  margin: 2px;
-}
-.visit-edit-wrapper {
-  display: inline-block;
 
+.visit-field {
+    width: 100%;
+    margin: 4px 0;
+    display: flex;
+    justify-content: space-between;
 }
+
+.visit-field-hide {
+    display: none;
+}
+
+.visit input {
+    width: 260px;
+    box-sizing: border-box;
+    color: black;
+}
+
+.visit textarea {
+    width: 260px;
+    box-sizing: border-box;
+    resize: none;
+    color: #000;
+}
+
+.visit select {
+    width: 260px;
+    box-sizing: border-box;
+    color: #000;
+}
+
+.visit-more-btn {
+    float: right;
+    margin: 4px 0;
+    cursor: pointer;
+    width: 125px;
+    transition: background-color .4s ease;
+}
+
+.visit-edit-btn:hover,
+.visit-more-btn:hover {
+    background-color: lightblue;
+}
+
+.visit-edit-wrapper {
+    display: inline-block;
+    position: relative;
+    margin: 4px 0;
+    width: 120px;
+}
+
 .visit-edit-btn {
-  margin: 2px;
+    width: 100%;
+    cursor: pointer;
+    transition: background-color .4s ease;
+}
+
+.visit-edit-btn:hover {
+    background-color: lightblue;
+}
+
+.visit-edit-menu {
+    width: 100%;
+    border: 1px solid grey;
+    box-sizing: border-box;
+    background-color: white;
+    position: absolute;
+    cursor: pointer;
+}
+
+.visit-edit-menu-item {
+    display: block;
+    box-sizing: border-box;
+    padding: 2px;
+}
+
+.visit-edit-menu-item:hover {
+    background-color: lightblue;
+    padding-left: 4px;
+    font-weight: 600;
 }
