@@ -7,11 +7,13 @@
 
 .cards-container {
     display: none;
+    flex-wrap: wrap;
     align-items: start;
     margin-top: 40px;
+    padding: 20px;
     border: 2px solid gray;
     width: 80%;
-    height: 62vh;
+    /*height: 62vh;*/
 
 }
 
