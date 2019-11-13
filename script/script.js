@@ -306,7 +306,6 @@ class SelectStatus extends Select {
     }
 }
 
-
 class SelectPriority extends Select {
     constructor(id, ...classArr) {
         super(id, ...classArr);
@@ -315,8 +314,8 @@ class SelectPriority extends Select {
     render() {
         const selectPriority = new Option('Выберите срочность', 'Status', 'true', 'true', '');
         const allVisits = new Option('Все визиты', 'allVisits', "", '', '');
-        const highPriority = new Option('Обычная', 'highPriority', "", '', '');
-        const middlePriority = new Option('Высокая', 'middlePriority', "", '', '');
+        const highPriority = new Option('Обычная', 'middlePriority', "", '', '');
+        const middlePriority = new Option('Высокая', 'highPriority', "", '', '');
         const lowPriority = new Option('Низкая', 'lowPriority', "", '', '');
 
         const visitPriority = document.getElementById('visit-priority');
@@ -326,40 +325,47 @@ class SelectPriority extends Select {
         middlePriority.render(visitPriority);
         lowPriority.render(visitPriority);
 
-
-
-        const cardPriority = document.getElementsByClassName('card-priority'); // Селектор в самой карточке
+        /*Priority filter*/
         visitPriority.onchange = function () {
-            switch (this.value) {
-                case 'highPriority':
-                    for (let i=0; i<cardPriority.length; i++) {
-                        if (cardPriority[i].value !== 'Высокая') {
-                            cardPriority[i].parentElement.parentElement.parentElement.style.display = 'none';
-                            // console.log(cardPriority[i].parentElement.parentElement.parentElement);
-                            // console.log(cardPriority[i].value);
-                        }
-                    }
-                    break;
-                case 'middlePriority':
-                    for (let i=0; i<cardPriority.length; i++) {
-                        if (cardPriority.value !== 'Обычная') {
-                            cardPriority[i].parentElement.parentElement.parentElement.style.display = 'none';
-                            // console.log(cardPriority[i].parentElement.parentElement.parentElement);
-                            // console.log(cardPriority[i].value);
-                        }
-                    }
-                    break;
-                case 'lowPriority':
-                    for (let i=0; i<cardPriority.length; i++) {
-                        if (cardPriority.value !== 'Низкая') {
-                            cardPriority[i].parentElement.parentElement.parentElement.style.display = 'none';
-                            // console.log(cardPriority[i].parentElement.parentElement.parentElement);
-                            // console.log(cardPriority[i].value);
-                        }
-                    }
-                    break;
-            }
+            const allCards = document.querySelectorAll('.visit');
+            const filterValue = this.options[this.selectedIndex].innerText;
+            allCards.forEach(item => {
+                const cardValue = item.querySelector('.card-priority').value;
+                item.hidden = filterValue === 'Вcе визиты' || filterValue === cardValue;
+            });
         };
+
+        // Селектор в самой карточке
+        // const cardPriority = document.getElementsByClassName('card-priority');
+        /*switch (this.value) {
+            case 'highPriority':
+                for (let i=0; i<cardPriority.length; i++) {
+                    if (cardPriority[i].value !== 'Высокая') {
+                        cardPriority[i].parentElement.parentElement.parentElement.style.display = 'none';
+                        // console.log(cardPriority[i].parentElement.parentElement.parentElement);
+                        // console.log(cardPriority[i].value);
+                    }
+                }
+                break;
+            case 'middlePriority':
+                for (let i=0; i<cardPriority.length; i++) {
+                    if (cardPriority.value !== 'Обычная') {
+                        cardPriority[i].parentElement.parentElement.parentElement.style.display = 'none';
+                        // console.log(cardPriority[i].parentElement.parentElement.parentElement);
+                        // console.log(cardPriority[i].value);
+                    }
+                }
+                break;
+            case 'lowPriority':
+                for (let i=0; i<cardPriority.length; i++) {
+                    if (cardPriority.value !== 'Низкая') {
+                        cardPriority[i].parentElement.parentElement.parentElement.style.display = 'none';
+                        // console.log(cardPriority[i].parentElement.parentElement.parentElement);
+                        // console.log(cardPriority[i].value);
+                    }
+                }
+                break;
+        }*/
     }
 }
 
@@ -1042,8 +1048,6 @@ class visitFormCardiolog extends visitForm {
         });
     }
 }
-
-
 
 
 /*DRAG AND DROP*/
