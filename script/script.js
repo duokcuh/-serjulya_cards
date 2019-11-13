@@ -29,10 +29,10 @@ class Visit {
         const priority = document.createElement('p');
         priority.className = 'visit-field';
         priority.dataset.hidden = 'true';
-        priority.innerHTML = `<label>Срочность</label><select>
-                <option>${this._priority}</option>
-                <option>${this._priority === 'Высокая' ? 'Обычная' : 'Высокая'}</option>
-                <option>${this._priority === 'Низкая' ? 'Обычная' : 'Низкая'}</option>
+        priority.innerHTML = `<label>Срочность</label><select class="card-priority">
+                <option value=${this._priority}>${this._priority}</option>
+                <option value=${this._priority === 'Высокая' ? 'Обычная' : 'Высокая'}>${this._priority === 'Высокая' ? 'Обычная' : 'Высокая'}</option>
+                <option value=${this._priority === 'Низкая' ? 'Обычная' : 'Низкая'}>${this._priority === 'Низкая' ? 'Обычная' : 'Низкая'}</option>
             </select>`;
         const status = document.createElement('p');
         status.className = 'visit-field';
@@ -315,9 +315,9 @@ class SelectPriority extends Select {
     render() {
         const selectPriority = new Option('Выберите срочность', 'Status', 'true', 'true', '');
         const allVisits = new Option('Все визиты', 'allVisits', "", '', '');
-        const highPriority = new Option('Срочные визиты', 'highPriority', "", '', '');
-        const middlePriority = new Option('Обычные визиты', 'middlePriority', "", '', '');
-        const lowPriority = new Option('Не срочные визиты', 'lowPriority', "", '', '');
+        const highPriority = new Option('Обычная', 'highPriority', "", '', '');
+        const middlePriority = new Option('Высокая', 'middlePriority', "", '', '');
+        const lowPriority = new Option('Низкая', 'lowPriority', "", '', '');
 
         const visitPriority = document.getElementById('visit-priority');
         selectPriority.render(visitPriority);
@@ -327,6 +327,39 @@ class SelectPriority extends Select {
         lowPriority.render(visitPriority);
 
 
+
+        const cardPriority = document.getElementsByClassName('card-priority'); // Селектор в самой карточке
+        visitPriority.onchange = function () {
+            switch (this.value) {
+                case 'highPriority':
+                    for (let i=0; i<cardPriority.length; i++) {
+                        if (cardPriority[i].value !== 'Высокая') {
+                            cardPriority[i].parentElement.parentElement.parentElement.style.display = 'none';
+                            // console.log(cardPriority[i].parentElement.parentElement.parentElement);
+                            // console.log(cardPriority[i].value);
+                        }
+                    }
+                    break;
+                case 'middlePriority':
+                    for (let i=0; i<cardPriority.length; i++) {
+                        if (cardPriority.value !== 'Обычная') {
+                            cardPriority[i].parentElement.parentElement.parentElement.style.display = 'none';
+                            // console.log(cardPriority[i].parentElement.parentElement.parentElement);
+                            // console.log(cardPriority[i].value);
+                        }
+                    }
+                    break;
+                case 'lowPriority':
+                    for (let i=0; i<cardPriority.length; i++) {
+                        if (cardPriority.value !== 'Низкая') {
+                            cardPriority[i].parentElement.parentElement.parentElement.style.display = 'none';
+                            // console.log(cardPriority[i].parentElement.parentElement.parentElement);
+                            // console.log(cardPriority[i].value);
+                        }
+                    }
+                    break;
+            }
+        };
     }
 }
 
@@ -755,12 +788,20 @@ class visitFormDentist extends visitForm {
 
     render() {
         super.render();
-        const dateInput = new Input('date', 'Дата последнего посещения*', "date", "", 'true', 'date-input', 'input');
+        const dateInput = new Input('text', 'Дата последнего посещения*', "date", "", 'true', 'date-input', 'input');
         const submitBtn = new Input('submit', '', "", "Подтвердить", '', '', 'submit-btn');
 
         const visitForms = document.getElementById('visit-form');
         dateInput.render(visitForms);
         submitBtn.render(visitForms);
+
+        const dateInputElement = document.getElementById('date-input');
+        dateInputElement.addEventListener("focus", function () {
+            this.type = 'date'
+        });
+        dateInputElement.addEventListener("blur", function () {
+            this.type = 'text'
+        });
 
         const nameInput = document.getElementById('name-input');
         const titleInput = document.getElementById('title-input');
@@ -823,8 +864,6 @@ class visitFormDentist extends visitForm {
                     }
                 });
         });
-
-
     }
 }
 
@@ -1003,6 +1042,82 @@ class visitFormCardiolog extends visitForm {
         });
     }
 }
+
+
+
+
+/*DRAG AND DROP*/
+
+// const dragImg = document.getElementsByClassName("visit");
+//
+// for (let i = 0; i < dragImg.length; i++) {
+//     console.log(dragImg);
+//
+//     dragImg[i].addEventListener("mousedown", function(event) {
+//
+//         let shiftX = event.clientX - dragImg[i].getBoundingClientRect().left;
+// //                console.log(shiftX);
+//
+//         let shiftY = event.clientY - dragImg[i].getBoundingClientRect().top;
+// //                console.log(shiftY)
+//
+//         dragImg[i].style.position = 'absolute';
+//         dragImg[i].style.zIndex = 1000;
+//         document.body.append(dragImg[i]);
+//
+//         moveAt(event.pageX, event.pageY);
+//
+//         // переносит мяч на координаты (pageX, pageY),
+//         // дополнительно учитывая изначальный сдвиг относительно указателя мыши
+//         function moveAt(pageX, pageY) {
+//             dragImg[i].style.left = pageX - shiftX + 'px';
+//             dragImg[i].style.top = pageY - shiftY + 'px';
+//         }
+//
+//         function onMouseMove(event) {
+//             moveAt(event.pageX, event.pageY);
+//         }
+//
+//         // передвигаем изображение при событии mousemove
+//         document.addEventListener('mousemove', onMouseMove);
+//
+//         // отпускаем изображение, удалить ненужные обработчики
+//         dragImg[i].onmouseup = function() {
+//             document.removeEventListener('mousemove', onMouseMove);
+//             dragImg[i].onmouseup = null;
+//         };
+//     });
+//
+//     dragImg[i].ondragstart = function() {
+//         return false;
+//     };
+// }
+
+
+// function allowDrop(e) {
+//     e.preventDefault();
+// }
+//
+// function drag(e) {
+//     e.dataTransfer.setData('text', e.target.id)
+// }
+//
+// function drop(e) {
+//     e.preventDefault();
+//     const data = e.dataTransfer.getData('text');
+//     this.appendChild(document.querySelector(data));
+// }
+//
+// const listItem = document.querySelectorAll('.visit');
+// listItem.forEach(item => {
+//     item.addEventListener('dragstart', drag)
+// });
+//
+// const table = document.getElementsByClassName('cards-container');
+// for (let i = 0; i < table.length; i++) {
+//     table[i].addEventListener('dragover', allowDrop);
+//     table[i].addEventListener('drop', drop);
+// }
 
 
 // AXIOS GET REQUEST CARDS
