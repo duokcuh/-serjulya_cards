@@ -61,7 +61,7 @@ class Visit {
         const elem = document.createElement('p');
         elem.className = 'visit-field';
         elem.dataset.hidden = dataHidden;
-        elem.innerHTML = `<label>${labelText}</label><textarea rows="3">${content}</textarea>`;
+        elem.innerHTML = `<label>${labelText}</label><textarea rows="3" class="search-description">${content}</textarea>`;
         container.append(elem);
     }
 
@@ -1048,6 +1048,29 @@ class visitFormCardiolog extends visitForm {
         });
     }
 }
+
+
+
+
+/*Поиск по строке ввода*/
+const searchFilter = document.getElementById('search-filter'); // Поле ввода
+const searchBtn = document.getElementById('search-btn');  // Кнопка для поиска
+
+const searchDescription = document.getElementsByClassName('search-description'); // Поле Описание в самой карточке по которому нужно искать
+
+searchBtn.addEventListener('click', () => {
+    for (let i=0; i<searchDescription.length; i++) {
+        if (searchDescription[i].value.indexOf(searchFilter.value.toLowerCase()) === -1) {
+            searchDescription[i].parentElement.parentElement.parentElement.style.display = 'none';
+            // console.log(searchDescription[i].parentElement.parentElement.parentElement);
+            // console.log(searchDescription[i].value);
+        }
+    }
+});
+
+
+
+
 
 
 /*DRAG AND DROP*/
