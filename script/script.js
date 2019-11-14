@@ -1,3 +1,5 @@
+
+/*************Class Visit and subclasses**************/
 class Visit {
     constructor(id, patient, doctor, title, description = '', priority) {
         this._id = id;
@@ -6,14 +8,12 @@ class Visit {
         this._title = title;
         this._description = description;
         this._priority = priority;
-        this._status = 'открыт';
+        this._status = 'В процессе';
         this._visit = null;
         this._editBtn = null;
-
     }
 
-    render(container = this._container) {
-        this._container = container;
+    render(container) {
         this._visit = document.createElement('form');
         this._visit.className = 'visit';
         container.append(this._visit);
@@ -23,26 +23,16 @@ class Visit {
 
         this.createInput(null, 'Пациент', 'text', this._patient, visitFieldset);
         this.createInput(null, 'Доктор', 'text', this._doctor, visitFieldset);
-        this.createInput(true, 'Цель визита', 'text', this._title, visitFieldset);
-        this.createTextarea(true, 'Комментарий', this._description, visitFieldset);
+        const title = this.createInput(true, 'Цель визита', 'text', this._title, visitFieldset);
+        const description = this.createTextarea(true, 'Комментарий', this._description, visitFieldset);
+        const priority = this.createInput(true, 'Срочность', 'text', this._priority, visitFieldset);
+        const status = this.createInput(true, 'Статус', 'text', this._status, visitFieldset);
 
-        const priority = document.createElement('p');
-        priority.className = 'visit-field';
-        priority.dataset.hidden = 'true';
-        priority.innerHTML = `<label>Срочность</label><select class="card-priority">
-                <option value=${this._priority}>${this._priority}</option>
-                <option value=${this._priority === 'Высокая' ? 'Обычная' : 'Высокая'}>${this._priority === 'Высокая' ? 'Обычная' : 'Высокая'}</option>
-                <option value=${this._priority === 'Низкая' ? 'Обычная' : 'Низкая'}>${this._priority === 'Низкая' ? 'Обычная' : 'Низкая'}</option>
-            </select>`;
-        const status = document.createElement('p');
-        status.className = 'visit-field';
-        status.dataset.hidden = 'true';
-        status.setAttribute('name', 'status');
-        status.innerHTML = `<label>Статус</label><select>
-                <option>${this._status}</option>
-                <option>${this._status === 'открыт' ? 'завершен' : 'открыт'}</option>
-            </select>`;
-        visitFieldset.append(priority, status);
+        /*Set classes for filter*/
+        title.querySelector('input').className = 'visit-field-search';
+        description.querySelector('textarea').className = 'visit-field-search';
+        status.querySelector('input').className = 'card-status';
+        priority.querySelector('input').className = 'card-priority';
 
         this._editBtn = this.editMenu();
 
@@ -55,16 +45,19 @@ class Visit {
         elem.dataset.hidden = dataHidden;
         elem.innerHTML = `<label>${labelText}</label><input type=${type} value="${content}">`;
         container.append(elem);
+        return elem;
     }
 
     createTextarea(dataHidden, labelText, content, container) {
         const elem = document.createElement('p');
         elem.className = 'visit-field';
         elem.dataset.hidden = dataHidden;
-        elem.innerHTML = `<label>${labelText}</label><textarea rows="3" class="search-description">${content}</textarea>`;
+        elem.innerHTML = `<label>${labelText}</label><textarea rows="3">${content}</textarea>`;
         container.append(elem);
+        return elem;
     }
 
+    // show/hide button
     toggleHidden() {
         const hiddenFields = this._visit.querySelectorAll('[data-hidden]');
         hiddenFields.forEach(elem => {
@@ -119,13 +112,13 @@ class Visit {
         // edit menu handler
         editMenu.addEventListener('click', event => {
             if (event.target.innerText === 'Завершить') {
-                this._status = 'завершен';
+                this._status = 'Визит завершен';
                 event.target.innerText = 'Открыть';
-                this._visit.querySelector('[name = status] option').innerText = this._status;
+                this._visit.querySelector('.card-status').value = this._status;
             } else if (event.target.innerText === 'Открыть') {
-                this._status = 'открыт';
+                this._status = 'В процессе';
                 event.target.innerText = 'Завершить';
-                this._visit.querySelector('[name = status] option').innerText = this._status;
+                this._visit.querySelector('.card-status').value = this._status;
             } else if (event.target.innerText === 'Редактировать') {
                 //обработчик редактирования
             } else if (event.target.innerText === 'Удалить') {
@@ -152,7 +145,7 @@ class VisitCardio extends Visit {
     render(container) {
         const visitFieldset = super.render(container);
         this.createInput(true, 'Давление', 'text', this._pressure, visitFieldset);
-        this.createInput(true, 'Индекс массы тела', 'number', this._massIndex, visitFieldset);
+        this.createInput(true, 'Индекс массы', 'number', this._massIndex, visitFieldset);
         this.createTextarea(true, 'Заболевания', this._diseases, visitFieldset);
         this.createInput(true, 'Возраст', 'number', this._age, visitFieldset);
         super.toggleHidden();
@@ -185,13 +178,7 @@ class VisitTherapist extends Visit {
         super.toggleHidden();
     }
 }
-
-/*----- only for example-----*/
-// const cardioTest = new VisitCardio(pressure = 12, massIndex = 35, diseases = 'не болел', age = 45, id = 66, patient = 'Афанасий Сигизмундович Скоробогатько', doctor = 'кардиолог', title = 'аритмия', description = 'постоянная боль в сердце и высокое давление', priority = 'Низкая', status = 'открыт');
-// const cardsContainer = document.getElementById('cards-container');
-// cardioTest.render(cardsContainer);
-
-/*--------------------------*/
+/****************class Visit END*************************/
 
 
 class Form {
@@ -294,8 +281,8 @@ class SelectStatus extends Select {
     render() {
         const selectStatus = new Option('Выберите стaтус', 'Status', 'true', 'true', '');
         const allVisits = new Option('Все визиты', 'allVisits', "", '', '');
-        const doneVisit = new Option('Визит прошел', 'doneVisit', "", '', '');
-        const openVisit = new Option('Визит не прошел', 'openVisit', "", '', '');
+        const doneVisit = new Option('Визит завершен', 'doneVisit', "", '', '');
+        const openVisit = new Option('В процессе', 'openVisit', "", '', '');
 
         const visitStatus = document.getElementById('visit-status');
         selectStatus.render(visitStatus);
@@ -303,6 +290,15 @@ class SelectStatus extends Select {
         doneVisit.render(visitStatus);
         openVisit.render(visitStatus);
 
+        /*Status filter*/
+        visitStatus.onchange = function () {
+            const allCards = document.querySelectorAll('.visit');
+            const filterValue = this.options[this.selectedIndex].innerText;
+            allCards.forEach(item => {
+                const cardValue = item.querySelector('.card-status').value;
+                item.hidden = filterValue !== 'Все визиты' && filterValue !== cardValue;
+            });
+        };
     }
 }
 
@@ -331,7 +327,7 @@ class SelectPriority extends Select {
             const filterValue = this.options[this.selectedIndex].innerText;
             allCards.forEach(item => {
                 const cardValue = item.querySelector('.card-priority').value;
-                item.hidden = filterValue === 'Вcе визиты' || filterValue === cardValue;
+                item.hidden = filterValue !== 'Все визиты' && filterValue !== cardValue;
             });
         };
 
@@ -649,9 +645,7 @@ window.addEventListener('load', () => {
         const createBtn = new Input('button', '', "", "Создать", '', 'create-btn', 'login-btn');
         createBtn.render(navbar);
 
-        const wrapper = document.getElementById('wrapper');
         const cardsContainer = document.getElementById('cards-container');
-        wrapper.style.display = 'flex';
         cardsContainer.style.display = 'flex';
 
         const filter = document.querySelector('.filter-form');
@@ -1052,20 +1046,26 @@ class visitFormCardiolog extends visitForm {
 
 
 
-/*Поиск по строке ввода*/
-const searchFilter = document.getElementById('search-filter'); // Поле ввода
-const searchBtn = document.getElementById('search-btn');  // Кнопка для поиска
-
-const searchDescription = document.getElementsByClassName('search-description'); // Поле Описание в самой карточке по которому нужно искать
-
+/*Input field search and filter*/
+const searchBtn = document.getElementById('search-btn');
 searchBtn.addEventListener('click', () => {
-    for (let i=0; i<searchDescription.length; i++) {
+    const allCards = document.querySelectorAll('.visit');
+    const filterValue = document.getElementById('search-filter').value.toLowerCase();
+    allCards.forEach(item => {
+        let visitValue = '';
+        item.querySelectorAll('.visit-field-search').forEach(elem => {
+            visitValue += elem.value.toLowerCase();
+        });
+        item.hidden = visitValue.indexOf(filterValue) === -1;
+
+    });
+    /*for (let i=0; i<searchDescription.length; i++) {
         if (searchDescription[i].value.indexOf(searchFilter.value.toLowerCase()) === -1) {
-            searchDescription[i].parentElement.parentElement.parentElement.style.display = 'none';
-            // console.log(searchDescription[i].parentElement.parentElement.parentElement);
+            searchDescription[i].parentElement.parentElement.parentElement.hidden = true;
+            console.log(searchDescription[i].closest('.visit'));
             // console.log(searchDescription[i].value);
         }
-    }
+    }*/
 });
 
 
