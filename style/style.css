@@ -6,6 +6,12 @@ body {
     background-image: url("../img/bc.png");
 }
 
+.container {
+    max-width: 1200px;
+    width: 95%;
+    margin: 0 auto;
+}
+
 .navbar {
     display: flex;
     align-items: center;

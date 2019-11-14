@@ -1,20 +1,17 @@
 
-.wrapper {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.cards-container {
+#cards-container {
     display: none;
     flex-wrap: wrap;
-    align-items: start;
+    justify-content: space-between;
     margin-top: 40px;
     padding: 20px;
-    border: 2px solid gray;
-    width: 80%;
-    /*height: 62vh;*/
-
+    background-image: url(../img/background.jpg);
+    background-size: cover;
+    border-radius: 10px;
+    box-shadow: 10px 10px 10px 0 #1d1d1d;
+}
+@media (max-width: 1250px) {
+    #cards-container {justify-content: space-around;}
 }
 
 .no-items {
@@ -23,13 +20,14 @@
 }
 
 .visit {
-    width: 400px;
+    width: 360px;
     padding: 5px;
     margin: 5px;
     border: 1px solid grey;
     border-radius: 5px;
-    background-image: url(../img/visit2.jpg);
+    background-image: url(../img/visit.jpg);
     background-size: cover;
+    box-shadow: 4px 4px 8px 0 #1d1d1d;
 }
 
 .visit-field {
@@ -43,24 +41,15 @@
     display: none;
 }
 
-.visit input {
-    width: 260px;
-    box-sizing: border-box;
-    color: black;
-}
-
+.visit input,
+.visit select,
 .visit textarea {
-    width: 260px;
+    width: 240px;
     box-sizing: border-box;
-    resize: none;
-    color: #000;
+    color: #1d1d1d;
+    padding-left: 5px;
 }
-
-.visit select {
-    width: 260px;
-    box-sizing: border-box;
-    color: #000;
-}
+.visit textarea {resize: none;}
 
 .visit-more-btn {
     float: right;
