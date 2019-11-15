@@ -629,9 +629,6 @@ window.addEventListener('load', () => {
 
         if (response.status >= 200 && response.status < 300) {
           if (dataArr.length > 0) {
-            dataArr.forEach(function (element) {
-              console.log(element)
-            });
 
             dataArr.forEach(function (item) {
               if (item.doctor === 'dentist') {
