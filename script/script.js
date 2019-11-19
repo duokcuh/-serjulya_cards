@@ -1,4 +1,3 @@
-
 /*************Class Visit and subclasses**************/
 class Visit {
     constructor(id, patient, doctor, title, description = '', priority) {
@@ -106,7 +105,12 @@ class Visit {
         editBtn.onclick = event => {
             event.preventDefault();
             editMenu.hidden = !editMenu.hidden;
-            editBtn.innerText === 'Редактировать' ? editBtn.innerText = 'Свернуть меню' : editBtn.innerText = 'Редактировать';
+            if (editBtn.innerText === 'Редактировать') {
+                document.querySelectorAll('.visit-edit-btn').forEach(elem => {
+                    if (elem.innerText === 'Свернуть меню') elem.click()
+                });
+                editBtn.innerText = 'Свернуть меню';
+            } else editBtn.innerText = 'Редактировать';
         };
 
         // edit menu handler
@@ -121,8 +125,23 @@ class Visit {
                 this._visit.querySelector('.card-status').value = this._status;
             } else if (event.target.innerText === 'Редактировать') {
                 //обработчик редактирования
+                this.editCard();
             } else if (event.target.innerText === 'Удалить') {
                 //обработчик удаления
+                if (!confirm('Вы уверены, что эту запись нужно удалить?')) return;
+                const token = `5747ac45350e`;
+                const authorization = {Authorization: `Bearer ${token}`};
+                const options = {
+                    method: 'DELETE',
+                    url: `http://cards.danit.com.ua/cards/${this._id}`,
+                    headers: authorization
+                };
+                axios(options).then(response => {
+                        if (response.data.status === "Success") {
+                            console.log(response);
+                            this._visit.remove();
+                        } else console.log('Something wrong. Try later.')
+                    }).catch(err => console.log(err));
             }
         });
 
@@ -130,6 +149,26 @@ class Visit {
         editVisitWrapper.append(editBtn, editMenu);
 
         return editBtn;
+    }
+
+    editCard (formDefault) {
+        new Modal("modal-create-visit", `Редактировать`).render();
+        const modalCreateVisit = document.getElementById('modal-create-visit');
+        new Select('doctor-select', 'select').render(modalCreateVisit);
+        new SelectDoctor().render();
+        const doctorSelect = document.getElementById('doctor-select');
+        for (let item of doctorSelect.options) {
+            item.selected = item.innerText === this._doctor;
+        }
+        doctorSelect.disabled = true;
+
+        new Form('visit-form').render(modalCreateVisit);
+        new formDefault().render();
+
+        document.getElementById('title-input').value = this._title;
+        document.getElementById('description-input').value = this._description;
+        document.getElementById('name-input').value = this._patient;
+        document.getElementById('form-visit-priority').value = this._priority;
     }
 }
 
@@ -141,7 +180,6 @@ class VisitCardio extends Visit {
         this._diseases = diseases;
         this._age = age;
     }
-
     render(container) {
         const visitFieldset = super.render(container);
         this.createInput(true, 'Давление', 'text', this._pressure, visitFieldset);
@@ -150,6 +188,13 @@ class VisitCardio extends Visit {
         this.createInput(true, 'Возраст', 'number', this._age, visitFieldset);
         super.toggleHidden();
     }
+    editCard() {
+        super.editCard(visitFormCardiolog);
+        document.getElementById('pressure-input').value = this._pressure;
+        document.getElementById('weight-index-input').value = this._massIndex;
+        document.getElementById('disease-input').value = this._diseases;
+        document.getElementById('age-input').value = this._age;
+    }
 }
 
 class VisitDentist extends Visit {
@@ -157,11 +202,14 @@ class VisitDentist extends Visit {
         super(...args);
         this._lastVisit = lastVisit;
     }
-
     render(container) {
         const visitFieldset = super.render(container);
         this.createInput(true, 'Последний визит', 'date', this._lastVisit, visitFieldset);
         super.toggleHidden();
+    }
+    editCard() {
+        super.editCard(visitFormDentist);
+        document.getElementById('date-input').value = this._lastVisit;
     }
 }
 
@@ -169,15 +217,18 @@ class VisitTherapist extends Visit {
     constructor(age, ...args) {
         super(...args);
         this._age = age;
-
     }
-
     render(container) {
         const visitFieldset = super.render(container);
         this.createInput(true, 'Возраст', 'number', this._age, visitFieldset);
         super.toggleHidden();
     }
+    editCard() {
+        super.editCard(visitFormTerapevt);
+        document.getElementById('age-input').value = this._age;
+    }
 }
+
 /****************class Visit END*************************/
 
 
@@ -389,13 +440,13 @@ class SelectDoctor extends Select {
 
 
 class Modal {
-    constructor(id, header, content) {
+    constructor(id, header) {
         this._modal = null;
         this._wrapper = null;
         this._title = null;
         this._id = id;
         this._header = header;
-        this._content = content;
+        // this._content = content;
     }
 
     render() {
@@ -405,8 +456,9 @@ class Modal {
         this._wrapper.id = this._id;
         this._wrapper.classList.add('modal-container');
         this._modal.classList.add('entry-modal-bg');
-        this._wrapper.innerHTML = this._content;
-        this._title.innerHTML = this._header;
+        // this._wrapper.innerHTML = this._content;
+        this._title.innerHTML = `<h2 class="modal-title">${this._header}</h2><div class="modal-close">X</div>`;
+        // this._title.innerHTML = this._header;
         // this._modal.id = this._id;
         const body = document.querySelector('body');
         body.append(this._modal);
@@ -429,7 +481,7 @@ navbar.addEventListener('click', (event) => {
     event.preventDefault();
     if (event.target.id === 'login-btn') {
 
-        const entryModal = new Modal("modal-wrapper", `<h2 class="modal-title">Авторизация</h2><div class="modal-close">X</div>`, '');
+        const entryModal = new Modal("modal-wrapper", `Авторизация`);
         entryModal.render();
         const registerForm = new Form('registration-form');
         const modal = document.getElementById('modal-wrapper');  /*МОДАЛЬНЕ ВІКНО*/
@@ -551,9 +603,7 @@ navbar.addEventListener('click', (event) => {
                         const createBtn = new Input('button', '', "", "Создать", '', 'create-btn', 'login-btn');
                         createBtn.render(navbar);
 
-                        const wrapper = document.getElementById('wrapper');
                         const cardsContainer = document.getElementById('cards-container');
-                        wrapper.style.display = 'flex';
                         cardsContainer.style.display = 'flex';
 
                         const modalBg = document.getElementsByClassName('entry-modal-bg');
@@ -593,7 +643,7 @@ navbar.addEventListener('click', (event) => {
 
 
     if (event.target.id === 'create-btn') {
-        const entryModal = new Modal("modal-create-visit", `<h2 class="modal-title">Создать визит к врачу</h2><div class="modal-close">X</div>`, '');
+        const entryModal = new Modal("modal-create-visit", `Создать визит к врачу`);
         entryModal.render();
         const chosenDoctor = new Select('doctor-select', 'select');
         const modalCreateVisit = document.getElementById('modal-create-visit');
@@ -603,15 +653,12 @@ navbar.addEventListener('click', (event) => {
         selectDoctor.render();
         const doctorSelect = document.getElementById('doctor-select');
 
-        console.log(doctorSelect);
-
         doctorSelect.onchange = function () {
             const visitationForm = new Form('visit-form');
             visitationForm.render(modalCreateVisit);
             const visit = new visitForm();
             visit.render();
             let visitForms = document.getElementById('visit-form');
-            console.log(visitForms);
 
             switch (this.value) {
                 case 'cardiolog':
@@ -1044,8 +1091,6 @@ class visitFormCardiolog extends visitForm {
 }
 
 
-
-
 /*Input field search and filter*/
 const searchBtn = document.getElementById('search-btn');
 searchBtn.addEventListener('click', () => {
@@ -1067,10 +1112,6 @@ searchBtn.addEventListener('click', () => {
         }
     }*/
 });
-
-
-
-
 
 
 /*DRAG AND DROP*/
