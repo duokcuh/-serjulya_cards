@@ -381,38 +381,6 @@ class SelectPriority extends Select {
                 item.hidden = filterValue !== 'Все визиты' && filterValue !== cardValue;
             });
         };
-
-        // Селектор в самой карточке
-        // const cardPriority = document.getElementsByClassName('card-priority');
-        /*switch (this.value) {
-            case 'highPriority':
-                for (let i=0; i<cardPriority.length; i++) {
-                    if (cardPriority[i].value !== 'Высокая') {
-                        cardPriority[i].parentElement.parentElement.parentElement.style.display = 'none';
-                        // console.log(cardPriority[i].parentElement.parentElement.parentElement);
-                        // console.log(cardPriority[i].value);
-                    }
-                }
-                break;
-            case 'middlePriority':
-                for (let i=0; i<cardPriority.length; i++) {
-                    if (cardPriority.value !== 'Обычная') {
-                        cardPriority[i].parentElement.parentElement.parentElement.style.display = 'none';
-                        // console.log(cardPriority[i].parentElement.parentElement.parentElement);
-                        // console.log(cardPriority[i].value);
-                    }
-                }
-                break;
-            case 'lowPriority':
-                for (let i=0; i<cardPriority.length; i++) {
-                    if (cardPriority.value !== 'Низкая') {
-                        cardPriority[i].parentElement.parentElement.parentElement.style.display = 'none';
-                        // console.log(cardPriority[i].parentElement.parentElement.parentElement);
-                        // console.log(cardPriority[i].value);
-                    }
-                }
-                break;
-        }*/
     }
 }
 
@@ -749,12 +717,10 @@ window.addEventListener('load', () => {
 
                                 const visitDentist = new VisitDentist(dateD, idD, nameD, "Стоматолог", titleD, descriptionD, priorityD, 'Активен');
                                 visitDentist.render(cardsContainer);
-
                             }
 
 
                             if (item.doctor === 'cardiologist') {
-
 
                                 const nameC = item.name;
                                 const titleC = item.title;
@@ -770,7 +736,6 @@ window.addEventListener('load', () => {
                                 visitCardiolog.render(cardsContainer);
                             }
 
-
                             if (item.doctor === 'therapist') {
 
                                 const nameT = item.name;
@@ -783,7 +748,6 @@ window.addEventListener('load', () => {
                                 const visitTherapist = new VisitTherapist(ageT, idT, nameT, "Терапевт", titleT, descriptionT, priorityT, 'Активен');
                                 visitTherapist.render(cardsContainer);
                             }
-
                         })
                     }
                 } else {
@@ -902,7 +866,7 @@ class visitFormDentist extends visitForm {
                         modalBg[0].remove();
 
 
-                        const visitDentist = new VisitDentist(date, dataId, name, "Стоматолог", title, description, priority, 'Активен');
+                        const visitDentist = new VisitDentist(date, dataId, name, "Стоматолог", title, description, priority);
                         const cardsContainer = document.getElementById('cards-container');
                         cardsContainer.innerHTML = '';
                         visitDentist.render(cardsContainer);
@@ -918,7 +882,6 @@ class visitFormDentist extends visitForm {
 class visitFormTerapevt extends visitForm {
     constructor(...args) {
         super(...args);
-
     }
 
     render() {
@@ -982,7 +945,7 @@ class visitFormTerapevt extends visitForm {
                         modalBg[0].remove();
 
 
-                        const visitTherapist = new VisitTherapist(age, dataId, name, "Терапевт", title, description, priority, 'Активен');
+                        const visitTherapist = new VisitTherapist(age, dataId, name, "Терапевт", title, description, priority);
                         const cardsContainer = document.getElementById('cards-container');
                         cardsContainer.innerHTML = '';
                         visitTherapist.render(cardsContainer);
@@ -1024,10 +987,8 @@ class visitFormCardiolog extends visitForm {
         const diseaseInputs = document.getElementById('disease-input');
         const ageInputs = document.getElementById('age-input');
 
-
         visitForms.addEventListener('submit', function (event) {
             event.preventDefault();
-
 
             const name = nameInput.value;
             const title = titleInput.value;
@@ -1078,7 +1039,7 @@ class visitFormCardiolog extends visitForm {
                         modalBg[0].remove();
 
 
-                        const visitCardiolog = new VisitCardio(pressure, weightIndex, disease, age, dataId, name, "Кардиолог", title, description, priority, 'Активен');
+                        const visitCardiolog = new VisitCardio(pressure, weightIndex, disease, age, dataId, name, "Кардиолог", title, description, priority);
                         const cardsContainer = document.getElementById('cards-container');
                         cardsContainer.innerHTML = '';
                         visitCardiolog.render(cardsContainer);
@@ -1089,6 +1050,7 @@ class visitFormCardiolog extends visitForm {
         });
     }
 }
+
 
 
 /*Input field search and filter*/
@@ -1102,15 +1064,7 @@ searchBtn.addEventListener('click', () => {
             visitValue += elem.value.toLowerCase();
         });
         item.hidden = visitValue.indexOf(filterValue) === -1;
-
     });
-    /*for (let i=0; i<searchDescription.length; i++) {
-        if (searchDescription[i].value.indexOf(searchFilter.value.toLowerCase()) === -1) {
-            searchDescription[i].parentElement.parentElement.parentElement.hidden = true;
-            console.log(searchDescription[i].closest('.visit'));
-            // console.log(searchDescription[i].value);
-        }
-    }*/
 });
 
 
