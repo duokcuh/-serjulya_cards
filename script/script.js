@@ -14,6 +14,7 @@ class Visit {
 
     render(container) {
         this._visit = document.createElement('form');
+        this._visit.id = this._id;
         this._visit.className = 'visit';
         container.append(this._visit);
         const visitFieldset = document.createElement('fieldset');
@@ -116,10 +117,12 @@ class Visit {
         // edit menu handler
         editMenu.addEventListener('click', event => {
             if (event.target.innerText === 'Завершить') {
+                // this.editStatus();
                 this._status = 'Визит завершен';
                 event.target.innerText = 'Открыть';
                 this._visit.querySelector('.card-status').value = this._status;
             } else if (event.target.innerText === 'Открыть') {
+                // this.editStatus();
                 this._status = 'В процессе';
                 event.target.innerText = 'Завершить';
                 this._visit.querySelector('.card-status').value = this._status;
@@ -129,18 +132,14 @@ class Visit {
             } else if (event.target.innerText === 'Удалить') {
                 //обработчик удаления
                 if (!confirm('Вы уверены, что эту запись нужно удалить?')) return;
-                const token = `5747ac45350e`;
-                const authorization = {Authorization: `Bearer ${token}`};
                 const options = {
                     method: 'DELETE',
                     url: `http://cards.danit.com.ua/cards/${this._id}`,
-                    headers: authorization
+                    headers: {Authorization: `Bearer ${localStorage.getItem('token')}`},
                 };
                 axios(options).then(response => {
-                        if (response.data.status === "Success") {
-                            console.log(response);
-                            this._visit.remove();
-                        } else console.log('Something wrong. Try later.')
+                        if (response.data.status === "Success") this._visit.remove();
+                        else console.log('Something wrong. Try later.')
                     }).catch(err => console.log(err));
             }
         });
@@ -151,19 +150,43 @@ class Visit {
         return editBtn;
     }
 
+    //save changed status request
+
+    /*editStatus () {
+        let status = this._status;
+        status === 'В процессе' ? status = 'Визит завершен' : status = 'В процессе';
+        const options = {
+            method: 'PUT',
+            url: `http://cards.danit.com.ua/cards/${this._id}`,
+            data: {
+            ...
+            status: status,
+            ...
+            },
+            headers: {Authorization: `Bearer ${localStorage.getItem('token')}`},
+        };
+
+        axios(options).then(response => {
+                if (response.data.status === "Success") {
+                    this._status = status;
+                    this._visit.querySelector('.card-status').value = this._status;
+                }
+            }).catch(err => console.log(err));
+    }*/
+
     editCard (formDefault) {
         new Modal("modal-create-visit", `Редактировать`).render();
         const modalCreateVisit = document.getElementById('modal-create-visit');
         new Select('doctor-select', 'select').render(modalCreateVisit);
         new SelectDoctor().render();
         const doctorSelect = document.getElementById('doctor-select');
+        doctorSelect.disabled = true;
         for (let item of doctorSelect.options) {
             item.selected = item.innerText === this._doctor;
         }
-        doctorSelect.disabled = true;
 
         new Form('visit-form').render(modalCreateVisit);
-        new formDefault().render();
+        new formDefault(this._id).render();
 
         document.getElementById('title-input').value = this._title;
         document.getElementById('description-input').value = this._description;
@@ -228,6 +251,17 @@ class VisitTherapist extends Visit {
         document.getElementById('age-input').value = this._age;
     }
 }
+
+/*const token = localStorage.getItem('token');
+const options = {
+    method: 'DELETE',
+    url: `http://cards.danit.com.ua/cards/1457`,
+    headers: {Authorization: `Bearer ${token}`},
+};
+axios(options).then(response => {
+    if (response.data.status === "Success") console.log(response);
+    else console.log('Something wrong. Try later.')
+}).catch(err => console.log(err));*/
 
 /****************class Visit END*************************/
 
@@ -308,7 +342,6 @@ class Option {
         this._disabled = disabled;
         this._id = id;
         this._classArr = classArr;
-
     }
 
     render(container) {
@@ -384,6 +417,19 @@ class SelectPriority extends Select {
     }
 }
 
+/*Input field search and filter*/
+const searchBtn = document.getElementById('search-btn');
+searchBtn.addEventListener('click', () => {
+    const allCards = document.querySelectorAll('.visit');
+    const filterValue = document.getElementById('search-filter').value.toLowerCase();
+    allCards.forEach(item => {
+        let visitValue = '';
+        item.querySelectorAll('.visit-field-search').forEach(elem => {
+            visitValue += elem.value.toLowerCase();
+        });
+        item.hidden = visitValue.indexOf(filterValue) === -1;
+    });
+});
 
 class SelectDoctor extends Select {
     constructor(id, ...classArr) {
@@ -401,8 +447,6 @@ class SelectDoctor extends Select {
         cardiolog.render(doctorSelection);
         dentist.render(doctorSelection);
         terapist.render(doctorSelection);
-
-
     }
 }
 
@@ -478,19 +522,20 @@ navbar.addEventListener('click', (event) => {
 
             axios(authOptions)
                 .then(function (response) {
-                    console.log(response);
-                    console.log(response.data);
+                    // console.log(response);
+                    // console.log(response.data.token);
 
                     if (response.data.status === "Success") {
 
-                        if (localStorage.getItem('Success') === null) {
+                        /*if (localStorage.getItem('Success') === null) {
                             localStorage.setItem('Success', 'authorization done')
                         } else {
                             localStorage.removeItem('Success')
-                        }
+                        }*/
+                        localStorage.setItem('token', `${response.data.token}`);
 
 
-                        const token = `5747ac45350e`;
+                        const token = localStorage.getItem('token');
 
                         const authorization = {
                             Authorization: `Bearer ${token}`
@@ -652,7 +697,8 @@ navbar.addEventListener('click', (event) => {
 
 // LOCAL STORAGE ON LOAD
 window.addEventListener('load', () => {
-    if (localStorage.getItem('Success') !== null) {
+    const token = localStorage.getItem('token');
+    if (token) {
 
         const loginBtn = document.getElementById('login-btn');
         loginBtn.remove();
@@ -681,7 +727,7 @@ window.addEventListener('load', () => {
         const selectPriority = new SelectPriority();
         selectPriority.render();
 
-        const token = `5747ac45350e`;
+        // const token = `5747ac45350e`;
 
         const authorization = {
             Authorization: `Bearer ${token}`
@@ -839,7 +885,7 @@ class visitFormDentist extends visitForm {
                 date: date
             };
 
-            const token = `5747ac45350e`;
+            const token = localStorage.getItem('token');
 
             const authorization = {
                 Authorization: `Bearer ${token}`
@@ -918,7 +964,7 @@ class visitFormTerapevt extends visitForm {
                 age: age
             };
 
-            const token = `5747ac45350e`;
+            const token = localStorage.getItem('token');
 
             const authorization = {
                 Authorization: `Bearer ${token}`
@@ -1011,7 +1057,7 @@ class visitFormCardiolog extends visitForm {
                 disease: disease,
             };
 
-            const token = `5747ac45350e`;
+            const token = localStorage.getItem('token');
 
             const authorization = {
                 Authorization: `Bearer ${token}`
@@ -1051,21 +1097,6 @@ class visitFormCardiolog extends visitForm {
     }
 }
 
-
-
-/*Input field search and filter*/
-const searchBtn = document.getElementById('search-btn');
-searchBtn.addEventListener('click', () => {
-    const allCards = document.querySelectorAll('.visit');
-    const filterValue = document.getElementById('search-filter').value.toLowerCase();
-    allCards.forEach(item => {
-        let visitValue = '';
-        item.querySelectorAll('.visit-field-search').forEach(elem => {
-            visitValue += elem.value.toLowerCase();
-        });
-        item.hidden = visitValue.indexOf(filterValue) === -1;
-    });
-});
 
 
 /*DRAG AND DROP*/
@@ -1145,7 +1176,7 @@ searchBtn.addEventListener('click', () => {
 // AXIOS GET REQUEST CARDS
 
 
-// const token = `5747ac45350e`;
+// const token = localStorage.getItem('token');
 //
 // const authorization = {
 //   Authorization: `Bearer ${token}`
@@ -1173,7 +1204,7 @@ searchBtn.addEventListener('click', () => {
 
 
 //
-// const token = `5747ac45350e`;
+// const token = localStorage.getItem('token');
 //
 // const authorization = {
 //   Authorization: `Bearer ${token}`
@@ -1200,7 +1231,7 @@ searchBtn.addEventListener('click', () => {
 // AXIOS PUT REQUEST CARDS
 
 
-// const token = `5747ac45350e`;
+// const token = localStorage.getItem('token');
 //
 // const authorization = {
 //   Authorization: `Bearer ${token}`
