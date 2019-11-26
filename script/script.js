@@ -138,9 +138,9 @@ class Visit {
                     headers: {Authorization: `Bearer ${localStorage.getItem('token')}`},
                 };
                 axios(options).then(response => {
-                        if (response.data.status === "Success") this._visit.remove();
-                        else console.log('Something wrong. Try later.')
-                    }).catch(err => console.log(err));
+                    if (response.data.status === "Success") this._visit.remove();
+                    else console.log('Something wrong. Try later.')
+                }).catch(err => console.log(err));
             }
         });
 
@@ -174,7 +174,7 @@ class Visit {
             }).catch(err => console.log(err));
     }*/
 
-    editCard (formDefault) {
+    editCard(formDefault) {
         new Modal("modal-create-visit", `Редактировать`).render();
         const modalCreateVisit = document.getElementById('modal-create-visit');
         new Select('doctor-select', 'select').render(modalCreateVisit);
@@ -203,6 +203,7 @@ class VisitCardio extends Visit {
         this._diseases = diseases;
         this._age = age;
     }
+
     render(container) {
         const visitFieldset = super.render(container);
         this.createInput(true, 'Давление', 'text', this._pressure, visitFieldset);
@@ -211,6 +212,7 @@ class VisitCardio extends Visit {
         this.createInput(true, 'Возраст', 'number', this._age, visitFieldset);
         super.toggleHidden();
     }
+
     editCard() {
         super.editCard(visitFormCardiolog);
         document.getElementById('pressure-input').value = this._pressure;
@@ -225,11 +227,13 @@ class VisitDentist extends Visit {
         super(...args);
         this._lastVisit = lastVisit;
     }
+
     render(container) {
         const visitFieldset = super.render(container);
         this.createInput(true, 'Последний визит', 'date', this._lastVisit, visitFieldset);
         super.toggleHidden();
     }
+
     editCard() {
         super.editCard(visitFormDentist);
         document.getElementById('date-input').value = this._lastVisit;
@@ -241,11 +245,13 @@ class VisitTherapist extends Visit {
         super(...args);
         this._age = age;
     }
+
     render(container) {
         const visitFieldset = super.render(container);
         this.createInput(true, 'Возраст', 'number', this._age, visitFieldset);
         super.toggleHidden();
     }
+
     editCard() {
         super.editCard(visitFormTerapevt);
         document.getElementById('age-input').value = this._age;
@@ -458,7 +464,6 @@ class Modal {
         this._title = null;
         this._id = id;
         this._header = header;
-        // this._content = content;
     }
 
     render() {
@@ -468,10 +473,7 @@ class Modal {
         this._wrapper.id = this._id;
         this._wrapper.classList.add('modal-container');
         this._modal.classList.add('entry-modal-bg');
-        // this._wrapper.innerHTML = this._content;
         this._title.innerHTML = `<h2 class="modal-title">${this._header}</h2><div class="modal-close">X</div>`;
-        // this._title.innerHTML = this._header;
-        // this._modal.id = this._id;
         const body = document.querySelector('body');
         body.append(this._modal);
         this._modal.append(this._wrapper);
@@ -484,7 +486,6 @@ class Modal {
                 event.target.remove();
             }
         });
-        console.log(this._modal);
     };
 }
 
@@ -522,25 +523,13 @@ navbar.addEventListener('click', (event) => {
 
             axios(authOptions)
                 .then(function (response) {
-                    // console.log(response);
-                    // console.log(response.data.token);
 
                     if (response.data.status === "Success") {
-
-                        /*if (localStorage.getItem('Success') === null) {
-                            localStorage.setItem('Success', 'authorization done')
-                        } else {
-                            localStorage.removeItem('Success')
-                        }*/
                         localStorage.setItem('token', `${response.data.token}`);
-
-
                         const token = localStorage.getItem('token');
-
                         const authorization = {
                             Authorization: `Bearer ${token}`
                         };
-
                         const authOptions = {
                             method: 'GET',
                             url: 'http://cards.danit.com.ua/cards',
@@ -549,8 +538,6 @@ navbar.addEventListener('click', (event) => {
 
                         axios(authOptions)
                             .then(function (response) {
-                                console.log(response);
-                                console.log(response.status);
                                 const dataArr = response.data;
 
                                 if (response.status >= 200 && response.status < 300) {
@@ -727,8 +714,6 @@ window.addEventListener('load', () => {
         const selectPriority = new SelectPriority();
         selectPriority.render();
 
-        // const token = `5747ac45350e`;
-
         const authorization = {
             Authorization: `Bearer ${token}`
         };
@@ -741,15 +726,10 @@ window.addEventListener('load', () => {
 
         axios(authOptions)
             .then(function (response) {
-                console.log(response);
-                console.log(response.status);
                 const dataArr = response.data;
 
                 if (response.status >= 200 && response.status < 300) {
                     if (dataArr.length > 0) {
-                        dataArr.forEach(function (element) {
-                            console.log(element)
-                        });
 
                         dataArr.forEach(function (item) {
                             if (item.doctor === 'dentist') {
@@ -821,7 +801,6 @@ class visitForm extends Form {
         this._middlePriority = new Option('Обычная', 'Обычная', "", '', '');
         this._lowPriority = new Option('Низкая', 'Низкая', "", '', '');
 
-
         const visitForm = document.getElementById('visit-form');
         this._titleInput.render(visitForm);
         this._descriptionInput.render(visitForm);
@@ -866,7 +845,9 @@ class visitFormDentist extends visitForm {
         const priorityInput = document.getElementById('form-visit-priority');
         const dateInputs = document.getElementById('date-input');
 
-
+        const currentId = this._id;
+        const oldCard = document.getElementById(this._id);
+        oldCard.removeAttribute('id');
         visitForms.addEventListener('submit', function (event) {
             event.preventDefault();
 
@@ -892,34 +873,28 @@ class visitFormDentist extends visitForm {
             };
 
             const authOptions = {
-                method: 'POST',
-                url: 'http://cards.danit.com.ua/cards',
+                method: currentId ? 'PUT' : 'POST',
+                url: currentId ? `http://cards.danit.com.ua/cards/${currentId}` : `http://cards.danit.com.ua/cards`,
                 data: JSON.stringify(content),
                 headers: authorization
             };
-
             axios(authOptions)
                 .then(function (response) {
 
-                    console.log(response);
-                    console.log(response.data);
-
                     if (response.status >= 200 && response.status < 300) {
                         const dataId = response.data.id;
-                        console.log(dataId);
 
-                        const modalBg = document.getElementsByClassName('entry-modal-bg');
-                        modalBg[0].remove();
-
+                        document.getElementsByClassName('entry-modal-bg')[0].remove();
 
                         const visitDentist = new VisitDentist(date, dataId, name, "Стоматолог", title, description, priority);
                         const cardsContainer = document.getElementById('cards-container');
-                        cardsContainer.innerHTML = '';
                         visitDentist.render(cardsContainer);
+                        if (currentId) oldCard.replaceWith(document.getElementById(currentId));
                     } else {
                         return alert('Ведутся технические работы')
                     }
                 });
+
         });
     }
 }
@@ -945,7 +920,9 @@ class visitFormTerapevt extends visitForm {
         const priorityInput = document.getElementById('form-visit-priority');
         const ageInputs = document.getElementById('age-input');
 
-
+        const currentId = this._id;
+        const oldCard = document.getElementById(this._id);
+        oldCard.removeAttribute('id');
         visitForms.addEventListener('submit', function (event) {
             event.preventDefault();
 
@@ -971,8 +948,8 @@ class visitFormTerapevt extends visitForm {
             };
 
             const authOptions = {
-                method: 'POST',
-                url: 'http://cards.danit.com.ua/cards',
+                method: currentId ? 'PUT' : 'POST',
+                url: currentId ? `http://cards.danit.com.ua/cards/${currentId}` : `http://cards.danit.com.ua/cards`,
                 data: JSON.stringify(content),
                 headers: authorization
             };
@@ -980,21 +957,15 @@ class visitFormTerapevt extends visitForm {
             axios(authOptions)
                 .then(function (response) {
 
-                    console.log(response);
-                    console.log(response.data);
-
                     if (response.status >= 200 && response.status < 300) {
                         const dataId = response.data.id;
-                        console.log(dataId);
 
-                        const modalBg = document.getElementsByClassName('entry-modal-bg');
-                        modalBg[0].remove();
-
+                        document.getElementsByClassName('entry-modal-bg')[0].remove();
 
                         const visitTherapist = new VisitTherapist(age, dataId, name, "Терапевт", title, description, priority);
                         const cardsContainer = document.getElementById('cards-container');
-                        cardsContainer.innerHTML = '';
                         visitTherapist.render(cardsContainer);
+                        if (currentId) oldCard.replaceWith(document.getElementById(currentId));
                     } else {
                         return alert('Ведутся технические работы')
                     }
@@ -1033,6 +1004,9 @@ class visitFormCardiolog extends visitForm {
         const diseaseInputs = document.getElementById('disease-input');
         const ageInputs = document.getElementById('age-input');
 
+        const currentId = this._id;
+        const oldCard = document.getElementById(this._id);
+        oldCard.removeAttribute('id');
         visitForms.addEventListener('submit', function (event) {
             event.preventDefault();
 
@@ -1064,8 +1038,8 @@ class visitFormCardiolog extends visitForm {
             };
 
             const authOptions = {
-                method: 'POST',
-                url: 'http://cards.danit.com.ua/cards',
+                method: currentId ? 'PUT' : 'POST',
+                url: currentId ? `http://cards.danit.com.ua/cards/${currentId}` : `http://cards.danit.com.ua/cards`,
                 data: JSON.stringify(content),
                 headers: authorization
             };
@@ -1073,22 +1047,16 @@ class visitFormCardiolog extends visitForm {
             axios(authOptions)
                 .then(function (response) {
 
-                    console.log(response);
-                    console.log(response.data);
-
                     if (response.status >= 200 && response.status < 300) {
 
                         const dataId = response.data.id;
-                        console.log(dataId);
 
-                        const modalBg = document.getElementsByClassName('entry-modal-bg');
-                        modalBg[0].remove();
-
+                        document.getElementsByClassName('entry-modal-bg')[0].remove();
 
                         const visitCardiolog = new VisitCardio(pressure, weightIndex, disease, age, dataId, name, "Кардиолог", title, description, priority);
                         const cardsContainer = document.getElementById('cards-container');
-                        cardsContainer.innerHTML = '';
                         visitCardiolog.render(cardsContainer);
+                        if (currentId) oldCard.replaceWith(document.getElementById(currentId));
                     } else {
                         return alert('Ведутся технические работы')
                     }
@@ -1096,162 +1064,3 @@ class visitFormCardiolog extends visitForm {
         });
     }
 }
-
-
-
-/*DRAG AND DROP*/
-
-// const dragImg = document.getElementsByClassName("visit");
-//
-// for (let i = 0; i < dragImg.length; i++) {
-//     console.log(dragImg);
-//
-//     dragImg[i].addEventListener("mousedown", function(event) {
-//
-//         let shiftX = event.clientX - dragImg[i].getBoundingClientRect().left;
-// //                console.log(shiftX);
-//
-//         let shiftY = event.clientY - dragImg[i].getBoundingClientRect().top;
-// //                console.log(shiftY)
-//
-//         dragImg[i].style.position = 'absolute';
-//         dragImg[i].style.zIndex = 1000;
-//         document.body.append(dragImg[i]);
-//
-//         moveAt(event.pageX, event.pageY);
-//
-//         // переносит мяч на координаты (pageX, pageY),
-//         // дополнительно учитывая изначальный сдвиг относительно указателя мыши
-//         function moveAt(pageX, pageY) {
-//             dragImg[i].style.left = pageX - shiftX + 'px';
-//             dragImg[i].style.top = pageY - shiftY + 'px';
-//         }
-//
-//         function onMouseMove(event) {
-//             moveAt(event.pageX, event.pageY);
-//         }
-//
-//         // передвигаем изображение при событии mousemove
-//         document.addEventListener('mousemove', onMouseMove);
-//
-//         // отпускаем изображение, удалить ненужные обработчики
-//         dragImg[i].onmouseup = function() {
-//             document.removeEventListener('mousemove', onMouseMove);
-//             dragImg[i].onmouseup = null;
-//         };
-//     });
-//
-//     dragImg[i].ondragstart = function() {
-//         return false;
-//     };
-// }
-
-
-// function allowDrop(e) {
-//     e.preventDefault();
-// }
-//
-// function drag(e) {
-//     e.dataTransfer.setData('text', e.target.id)
-// }
-//
-// function drop(e) {
-//     e.preventDefault();
-//     const data = e.dataTransfer.getData('text');
-//     this.appendChild(document.querySelector(data));
-// }
-//
-// const listItem = document.querySelectorAll('.visit');
-// listItem.forEach(item => {
-//     item.addEventListener('dragstart', drag)
-// });
-//
-// const table = document.getElementsByClassName('cards-container');
-// for (let i = 0; i < table.length; i++) {
-//     table[i].addEventListener('dragover', allowDrop);
-//     table[i].addEventListener('drop', drop);
-// }
-
-
-// AXIOS GET REQUEST CARDS
-
-
-// const token = localStorage.getItem('token');
-//
-// const authorization = {
-//   Authorization: `Bearer ${token}`
-// };
-//
-// const authOptions = {
-//   method: 'GET',
-//   url: 'http://cards.danit.com.ua/cards',
-//   // data: JSON.stringify(),
-//   headers: authorization
-// };
-//
-// axios(authOptions)
-//   .then(function (response) {
-//     console.log(response);
-//     console.log(response.data);
-//
-//     if (response.data.status === "Success") {
-//
-//     }
-//     });
-
-
-// AXIOS DELETE REQUEST CARDS
-
-
-//
-// const token = localStorage.getItem('token');
-//
-// const authorization = {
-//   Authorization: `Bearer ${token}`
-// };
-//
-// const h = {
-//   method: 'DELETE',
-//   url: 'http://cards.danit.com.ua/cards/1384',
-//   headers: authorization
-// };
-//
-// axios(h)
-//   .then(function (response) {
-//
-//
-//     if (response.data.status === "Success") {
-//       console.log(response);
-//       console.log(response.data);
-//     }
-//
-// });
-
-
-// AXIOS PUT REQUEST CARDS
-
-
-// const token = localStorage.getItem('token');
-//
-// const authorization = {
-//   Authorization: `Bearer ${token}`
-// };
-//
-// const authOptions = {
-//   method: 'DELETE',
-//   url: 'http://cards.danit.com.ua/cards/1360',
-//   // data: JSON.stringify(),
-//   headers: authorization
-// };
-//
-// axios(authOptions)
-//   .then(function (response) {
-//
-//
-//     if (response.data.status === "Success") {
-//       // visitTherapist.render(cardsContainer);
-//       console.log(response);
-//       console.log(response.data);
-//     }
-//
-// });
