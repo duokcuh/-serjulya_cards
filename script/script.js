@@ -116,6 +116,7 @@ class Visit {
 
         // edit menu handler
         editMenu.addEventListener('click', event => {
+
             if (event.target.innerText === 'Завершить') {
                 // this.editStatus();
                 this._status = 'Визит завершен';
@@ -126,9 +127,11 @@ class Visit {
                 this._status = 'В процессе';
                 event.target.innerText = 'Завершить';
                 this._visit.querySelector('.card-status').value = this._status;
+
             } else if (event.target.innerText === 'Редактировать') {
                 //обработчик редактирования
                 this.editCard();
+
             } else if (event.target.innerText === 'Удалить') {
                 //обработчик удаления
                 if (!confirm('Вы уверены, что эту запись нужно удалить?')) return;
@@ -257,17 +260,6 @@ class VisitTherapist extends Visit {
         document.getElementById('age-input').value = this._age;
     }
 }
-
-/*const token = localStorage.getItem('token');
-const options = {
-    method: 'DELETE',
-    url: `http://cards.danit.com.ua/cards/1457`,
-    headers: {Authorization: `Bearer ${token}`},
-};
-axios(options).then(response => {
-    if (response.data.status === "Success") console.log(response);
-    else console.log('Something wrong. Try later.')
-}).catch(err => console.log(err));*/
 
 /****************class Visit END*************************/
 
@@ -814,6 +806,29 @@ class visitForm extends Form {
 
         this._fullNameInput.render(visitForm);
     }
+
+    // check PUT or POST request
+    checkRequestType(id) {
+        if (id) {
+            const oldCard = document.getElementById(id);
+            return {
+                id,
+                method: 'PUT',
+                url: `http://cards.danit.com.ua/cards/${id}`,
+                oldCard,
+                ifPut() {
+                    this.oldCard.removeAttribute('id');
+                    this.oldCard.replaceWith(document.getElementById(this.id));
+                }
+            };
+        } else return {
+            method: 'POST',
+            url: `http://cards.danit.com.ua/cards`,
+            ifPut() {
+                return false
+            },
+        }
+    }
 }
 
 
@@ -845,9 +860,7 @@ class visitFormDentist extends visitForm {
         const priorityInput = document.getElementById('form-visit-priority');
         const dateInputs = document.getElementById('date-input');
 
-        const currentId = this._id;
-        const oldCard = document.getElementById(this._id);
-        oldCard.removeAttribute('id');
+        const requestOptions = super.checkRequestType(this._id);
         visitForms.addEventListener('submit', function (event) {
             event.preventDefault();
 
@@ -873,8 +886,8 @@ class visitFormDentist extends visitForm {
             };
 
             const authOptions = {
-                method: currentId ? 'PUT' : 'POST',
-                url: currentId ? `http://cards.danit.com.ua/cards/${currentId}` : `http://cards.danit.com.ua/cards`,
+                method: requestOptions.method,
+                url: requestOptions.url,
                 data: JSON.stringify(content),
                 headers: authorization
             };
@@ -889,7 +902,7 @@ class visitFormDentist extends visitForm {
                         const visitDentist = new VisitDentist(date, dataId, name, "Стоматолог", title, description, priority);
                         const cardsContainer = document.getElementById('cards-container');
                         visitDentist.render(cardsContainer);
-                        if (currentId) oldCard.replaceWith(document.getElementById(currentId));
+                        requestOptions.ifPut();
                     } else {
                         return alert('Ведутся технические работы')
                     }
@@ -920,9 +933,7 @@ class visitFormTerapevt extends visitForm {
         const priorityInput = document.getElementById('form-visit-priority');
         const ageInputs = document.getElementById('age-input');
 
-        const currentId = this._id;
-        const oldCard = document.getElementById(this._id);
-        oldCard.removeAttribute('id');
+        const requestOptions = super.checkRequestType(this._id);
         visitForms.addEventListener('submit', function (event) {
             event.preventDefault();
 
@@ -948,8 +959,8 @@ class visitFormTerapevt extends visitForm {
             };
 
             const authOptions = {
-                method: currentId ? 'PUT' : 'POST',
-                url: currentId ? `http://cards.danit.com.ua/cards/${currentId}` : `http://cards.danit.com.ua/cards`,
+                method: requestOptions.method,
+                url: requestOptions.url,
                 data: JSON.stringify(content),
                 headers: authorization
             };
@@ -965,7 +976,7 @@ class visitFormTerapevt extends visitForm {
                         const visitTherapist = new VisitTherapist(age, dataId, name, "Терапевт", title, description, priority);
                         const cardsContainer = document.getElementById('cards-container');
                         visitTherapist.render(cardsContainer);
-                        if (currentId) oldCard.replaceWith(document.getElementById(currentId));
+                        requestOptions.ifPut();
                     } else {
                         return alert('Ведутся технические работы')
                     }
@@ -1004,9 +1015,7 @@ class visitFormCardiolog extends visitForm {
         const diseaseInputs = document.getElementById('disease-input');
         const ageInputs = document.getElementById('age-input');
 
-        const currentId = this._id;
-        const oldCard = document.getElementById(this._id);
-        oldCard.removeAttribute('id');
+        const requestOptions = super.checkRequestType(this._id);
         visitForms.addEventListener('submit', function (event) {
             event.preventDefault();
 
@@ -1038,8 +1047,8 @@ class visitFormCardiolog extends visitForm {
             };
 
             const authOptions = {
-                method: currentId ? 'PUT' : 'POST',
-                url: currentId ? `http://cards.danit.com.ua/cards/${currentId}` : `http://cards.danit.com.ua/cards`,
+                method: requestOptions.method,
+                url: requestOptions.url,
                 data: JSON.stringify(content),
                 headers: authorization
             };
@@ -1056,7 +1065,7 @@ class visitFormCardiolog extends visitForm {
                         const visitCardiolog = new VisitCardio(pressure, weightIndex, disease, age, dataId, name, "Кардиолог", title, description, priority);
                         const cardsContainer = document.getElementById('cards-container');
                         visitCardiolog.render(cardsContainer);
-                        if (currentId) oldCard.replaceWith(document.getElementById(currentId));
+                        requestOptions.ifPut();
                     } else {
                         return alert('Ведутся технические работы')
                     }

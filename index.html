@@ -3,34 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <title> Step-project-cards</title>
+    <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.css">
     <link rel="stylesheet" href=style/reset.css>
     <link rel="stylesheet" href="style/style.css">
 </head>
 <body>
 
-<nav class="navbar" id="navbar">
-    <div class="navbar-logo">
-        <img class="navbar-logo-img" src="img/logo.png" alt="">
-        <a href="#" class="navbar-logo-name">Hospital</a>
-    </div>
+<header class="header" >
+    <div class="navbar container" id="navbar">
+        <div class="navbar-logo">
+            <img class="navbar-logo-img" src="img/logo.png" alt="">
+            <a href="#" class="navbar-logo-name">Smart Hospital</a>
+        </div>
 
-    <button class="login-btn" id="login-btn">Вход</button>
-</nav>
-
-<div class="filter-form">
-    <div id="status-container"></div>
-    <div id="priority-container"></div>
-    <div class="search-form-wrapper">
-        <input class="search-form" id="search-filter" placeholder="Поиск по заголовку/содержимому визита...">
-        <i class="fas fa-search search-icon"></i>
+        <button class="login-btn" id="login-btn">Вход</button>
     </div>
-    <button class="search-btn" id="search-btn">Поиск</button>
+</header>
+
+<div class="filter-section">
+    <div class="filter-form container">
+        <div id="status-container"></div>
+        <div id="priority-container"></div>
+        <div class="search-form-wrapper">
+            <input class="search-form" id="search-filter" placeholder="Поиск по заголовку/содержимому визита...">
+            <i class="fas fa-search search-icon"></i>
+        </div>
+        <button class="search-btn" id="search-btn">Поиск</button>
+    </div>
 </div>
 
 <div class="container">
     <div id="cards-container"></div>
 </div>
+
+<footer class="footer">
+    <p>Smart Hospital Software &copy; SerJulia Team</p>
+</footer>
 
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script src="script/script.js"></script>
