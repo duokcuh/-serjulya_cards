@@ -489,9 +489,8 @@ navbar.addEventListener('click', (event) => {
     const entryModal = new Modal("modal-wrapper", `Авторизация`);
     entryModal.render();
     const registerForm = new Form('registration-form');
-    const modal = document.getElementById('modal-wrapper');  /*МОДАЛЬНЕ ВІКНО*/
+    const modal = document.getElementById('modal-wrapper');  /*Modal Window*/
     registerForm.render(modal);
-
     const registration = new registrationForm();
     registration.render();
     const registerFormSubmit = document.getElementById('registration-form');
@@ -515,7 +514,6 @@ navbar.addEventListener('click', (event) => {
 
       axios(authOptions)
         .then(function (response) {
-
           if (response.data.status === "Success") {
             localStorage.setItem('token', `${response.data.token}`);
             const token = localStorage.getItem('token');
@@ -527,32 +525,23 @@ navbar.addEventListener('click', (event) => {
               url: 'http://cards.danit.com.ua/cards',
               headers: authorization
             };
-
             axios(authOptions)
               .then(function (response) {
                 const dataArr = response.data;
-
                 if (response.status >= 200 && response.status < 300) {
                   if (dataArr.length > 0) {
                     dataArr.forEach(function (item) {
                       if (item.doctor === 'dentist') {
-
                         const nameD = item.name;
                         const titleD = item.title;
                         const descriptionD = item.description;
                         const priorityD = item.priority;
                         const dateD = item.date;
                         const idD = item.id;
-
                         const visitDentist = new VisitDentist(dateD, idD, nameD, "Стоматолог", titleD, descriptionD, priorityD, 'Активен');
                         visitDentist.render(cardsContainer);
-
                       }
-
-
                       if (item.doctor === 'cardiologist') {
-
-
                         const nameC = item.name;
                         const titleC = item.title;
                         const descriptionC = item.description;
@@ -562,32 +551,25 @@ navbar.addEventListener('click', (event) => {
                         const pressureC = item.pressure;
                         const weightIndexC = item.weightIndex;
                         const diseaseC = item.disease;
-
                         const visitCardiolog = new VisitCardio(pressureC, weightIndexC, diseaseC, ageC, idC, nameC, "Кардиолог", titleC, descriptionC, priorityC, 'Активен');
                         visitCardiolog.render(cardsContainer);
                       }
-
-
                       if (item.doctor === 'therapist') {
-
                         const nameT = item.name;
                         const titleT = item.title;
                         const descriptionT = item.description;
                         const priorityT = item.priority;
                         const ageT = item.age;
                         const idT = item.id;
-
                         const visitTherapist = new VisitTherapist(ageT, idT, nameT, "Терапевт", titleT, descriptionT, priorityT, 'Активен');
                         visitTherapist.render(cardsContainer);
                       }
-
                     })
                   }
                 } else {
                   return cardsContainer.innerHTML = `<div class="no-items">No items have been added</div>`;
                 }
               });
-
 
             const loginBtn = document.getElementById('login-btn');
             loginBtn.style.display = 'none';
@@ -671,7 +653,6 @@ navbar.addEventListener('click', (event) => {
       }
     };
   }
-
 });
 
 // LOCAL STORAGE ON LOAD
@@ -778,300 +759,301 @@ window.addEventListener('load', () => {
       });
   }
 })
-    class visitForm extends Form {
-      constructor(...args) {
-        super(...args);
 
-      }
+class visitForm extends Form {
+  constructor(...args) {
+    super(...args);
 
-      render() {
-        this._titleInput = new Input('text', 'Цель визита*', "purpose", "", 'true', 'title-input', 'input');
-        this._descriptionInput = new Input('text', 'Краткое описание визита', "description", "", '', 'description-input', 'input');
-        this._fullNameInput = new Input('text', 'ФИО*', "fullName", "", 'true', 'name-input', 'input');
+  }
 
-        this._formVisitPriority = new Select('form-visit-priority', 'input', 'form-select');
-        this._Priority = new Option('Выберете срочность', 'Срочность не выбрана', "true", 'true', '');
-        this._highPriority = new Option('Высокая', 'Высокая', "", '', '');
-        this._middlePriority = new Option('Обычная', 'Обычная', "", '', '');
-        this._lowPriority = new Option('Низкая', 'Низкая', "", '', '');
+  render() {
+    this._titleInput = new Input('text', 'Цель визита*', "purpose", "", 'true', 'title-input', 'input');
+    this._descriptionInput = new Input('text', 'Краткое описание визита', "description", "", '', 'description-input', 'input');
+    this._fullNameInput = new Input('text', 'ФИО*', "fullName", "", 'true', 'name-input', 'input');
 
-        const visitForm = document.getElementById('visit-form');
-        this._titleInput.render(visitForm);
-        this._descriptionInput.render(visitForm);
+    this._formVisitPriority = new Select('form-visit-priority', 'input', 'form-select');
+    this._Priority = new Option('Выберете срочность', 'Срочность не выбрана', "true", 'true', '');
+    this._highPriority = new Option('Высокая', 'Высокая', "", '', '');
+    this._middlePriority = new Option('Обычная', 'Обычная', "", '', '');
+    this._lowPriority = new Option('Низкая', 'Низкая', "", '', '');
 
-        this._formVisitPriority.render(visitForm);
-        const formVisitPriority = document.getElementById('form-visit-priority');
-        this._Priority.render(formVisitPriority);
-        this._highPriority.render(formVisitPriority);
-        this._middlePriority.render(formVisitPriority);
-        this._lowPriority.render(formVisitPriority);
+    const visitForm = document.getElementById('visit-form');
+    this._titleInput.render(visitForm);
+    this._descriptionInput.render(visitForm);
 
-        this._fullNameInput.render(visitForm);
-      }
+    this._formVisitPriority.render(visitForm);
+    const formVisitPriority = document.getElementById('form-visit-priority');
+    this._Priority.render(formVisitPriority);
+    this._highPriority.render(formVisitPriority);
+    this._middlePriority.render(formVisitPriority);
+    this._lowPriority.render(formVisitPriority);
 
-      // check PUT or POST request
-      checkRequestType(id) {
-        if (id) {
-          const oldCard = document.getElementById(id);
-          return {
-            id,
-            method: 'PUT',
-            url: `http://cards.danit.com.ua/cards/${id}`,
-            oldCard,
-            ifPut() {
-              this.oldCard.removeAttribute('id');
-              this.oldCard.replaceWith(document.getElementById(this.id));
-            }
-          };
-        } else return {
-          method: 'POST',
-          url: `http://cards.danit.com.ua/cards`,
-          ifPut() {
-            return false
-          },
+    this._fullNameInput.render(visitForm);
+  }
+
+  // check PUT or POST request
+  checkRequestType(id) {
+    if (id) {
+      const oldCard = document.getElementById(id);
+      return {
+        id,
+        method: 'PUT',
+        url: `http://cards.danit.com.ua/cards/${id}`,
+        oldCard,
+        ifPut() {
+          this.oldCard.removeAttribute('id');
+          this.oldCard.replaceWith(document.getElementById(this.id));
         }
-      }
+      };
+    } else return {
+      method: 'POST',
+      url: `http://cards.danit.com.ua/cards`,
+      ifPut() {
+        return false
+      },
     }
+  }
+}
 
 
-    class visitFormDentist extends visitForm {
-      constructor(id) {
-        super(id);
-      }
+class visitFormDentist extends visitForm {
+  constructor(id) {
+    super(id);
+  }
 
-      render() {
-        super.render();
-        const dateInput = new Input('text', 'Дата последнего посещения*', "date", "", 'true', 'date-input', 'input');
-        const submitBtn = new Input('submit', '', "", "Подтвердить", '', '', 'submit-btn');
+  render() {
+    super.render();
+    const dateInput = new Input('text', 'Дата последнего посещения*', "date", "", 'true', 'date-input', 'input');
+    const submitBtn = new Input('submit', '', "", "Подтвердить", '', '', 'submit-btn');
 
-        const visitForms = document.getElementById('visit-form');
-        dateInput.render(visitForms);
-        submitBtn.render(visitForms);
+    const visitForms = document.getElementById('visit-form');
+    dateInput.render(visitForms);
+    submitBtn.render(visitForms);
 
-        const dateInputElement = document.getElementById('date-input');
-        dateInputElement.addEventListener("focus", function () {
-          this.type = 'date'
+    const dateInputElement = document.getElementById('date-input');
+    dateInputElement.addEventListener("focus", function () {
+      this.type = 'date'
+    });
+    dateInputElement.addEventListener("blur", function () {
+      this.type = 'text'
+    });
+
+    const nameInput = document.getElementById('name-input');
+    const titleInput = document.getElementById('title-input');
+    const descriptionInput = document.getElementById('description-input');
+    const priorityInput = document.getElementById('form-visit-priority');
+    const dateInputs = document.getElementById('date-input');
+
+    const requestOptions = super.checkRequestType(this._id);
+    visitForms.addEventListener('submit', function (event) {
+      event.preventDefault();
+
+      const name = nameInput.value;
+      const title = titleInput.value;
+      const description = descriptionInput.value;
+      const priority = priorityInput.value;
+      const date = dateInputs.value;
+
+      const content = {
+        doctor: 'dentist',
+        name: name,
+        title: title,
+        description: description,
+        priority: priority,
+        date: date
+      };
+
+      const token = localStorage.getItem('token');
+
+      const authorization = {
+        Authorization: `Bearer ${token}`
+      };
+
+      const authOptions = {
+        method: requestOptions.method,
+        url: requestOptions.url,
+        data: JSON.stringify(content),
+        headers: authorization
+      };
+      axios(authOptions)
+        .then(function (response) {
+
+          if (response.status >= 200 && response.status < 300) {
+            const dataId = response.data.id;
+
+            document.getElementsByClassName('entry-modal-bg')[0].remove();
+
+            const visitDentist = new VisitDentist(date, dataId, name, "Стоматолог", title, description, priority);
+            const cardsContainer = document.getElementById('cards-container');
+            visitDentist.render(cardsContainer);
+            requestOptions.ifPut();
+          } else {
+            return alert('Ведутся технические работы')
+          }
         });
-        dateInputElement.addEventListener("blur", function () {
-          this.type = 'text'
+
+    });
+  }
+}
+
+
+class visitFormTerapevt extends visitForm {
+  constructor(...args) {
+    super(...args);
+  }
+
+  render() {
+    super.render();
+    const ageInput = new Input('number', 'Возраст*', "age", "", 'true', 'age-input', 'input');
+    const submitBtn = new Input('submit', '', "", "Подтвердить", '', 'terapevt-create-btn', 'submit-btn');
+
+    const visitForms = document.getElementById('visit-form');
+    ageInput.render(visitForms);
+    submitBtn.render(visitForms);
+
+    const nameInput = document.getElementById('name-input');
+    const titleInput = document.getElementById('title-input');
+    const descriptionInput = document.getElementById('description-input');
+    const priorityInput = document.getElementById('form-visit-priority');
+    const ageInputs = document.getElementById('age-input');
+
+    const requestOptions = super.checkRequestType(this._id);
+    visitForms.addEventListener('submit', function (event) {
+      event.preventDefault();
+
+      const name = nameInput.value;
+      const title = titleInput.value;
+      const description = descriptionInput.value;
+      const priority = priorityInput.value;
+      const age = ageInputs.value;
+
+      const content = {
+        doctor: 'therapist',
+        name: name,
+        title: title,
+        description: description,
+        priority: priority,
+        age: age
+      };
+
+      const token = localStorage.getItem('token');
+
+      const authorization = {
+        Authorization: `Bearer ${token}`
+      };
+
+      const authOptions = {
+        method: requestOptions.method,
+        url: requestOptions.url,
+        data: JSON.stringify(content),
+        headers: authorization
+      };
+
+      axios(authOptions)
+        .then(function (response) {
+
+          if (response.status >= 200 && response.status < 300) {
+            const dataId = response.data.id;
+
+            document.getElementsByClassName('entry-modal-bg')[0].remove();
+
+            const visitTherapist = new VisitTherapist(age, dataId, name, "Терапевт", title, description, priority);
+            const cardsContainer = document.getElementById('cards-container');
+            visitTherapist.render(cardsContainer);
+            requestOptions.ifPut();
+          } else {
+            return alert('Ведутся технические работы')
+          }
         });
-
-        const nameInput = document.getElementById('name-input');
-        const titleInput = document.getElementById('title-input');
-        const descriptionInput = document.getElementById('description-input');
-        const priorityInput = document.getElementById('form-visit-priority');
-        const dateInputs = document.getElementById('date-input');
-
-        const requestOptions = super.checkRequestType(this._id);
-        visitForms.addEventListener('submit', function (event) {
-          event.preventDefault();
-
-          const name = nameInput.value;
-          const title = titleInput.value;
-          const description = descriptionInput.value;
-          const priority = priorityInput.value;
-          const date = dateInputs.value;
-
-          const content = {
-            doctor: 'dentist',
-            name: name,
-            title: title,
-            description: description,
-            priority: priority,
-            date: date
-          };
-
-          const token = localStorage.getItem('token');
-
-          const authorization = {
-            Authorization: `Bearer ${token}`
-          };
-
-          const authOptions = {
-            method: requestOptions.method,
-            url: requestOptions.url,
-            data: JSON.stringify(content),
-            headers: authorization
-          };
-          axios(authOptions)
-            .then(function (response) {
-
-              if (response.status >= 200 && response.status < 300) {
-                const dataId = response.data.id;
-
-                document.getElementsByClassName('entry-modal-bg')[0].remove();
-
-                const visitDentist = new VisitDentist(date, dataId, name, "Стоматолог", title, description, priority);
-                const cardsContainer = document.getElementById('cards-container');
-                visitDentist.render(cardsContainer);
-                requestOptions.ifPut();
-              } else {
-                return alert('Ведутся технические работы')
-              }
-            });
-
-        });
-      }
-    }
+    });
+  }
+}
 
 
-    class visitFormTerapevt extends visitForm {
-      constructor(...args) {
-        super(...args);
-      }
+class visitFormCardiolog extends visitForm {
+  constructor(...args) {
+    super(...args);
+  }
 
-      render() {
-        super.render();
-        const ageInput = new Input('number', 'Возраст*', "age", "", 'true', 'age-input', 'input');
-        const submitBtn = new Input('submit', '', "", "Подтвердить", '', 'terapevt-create-btn', 'submit-btn');
+  render() {
+    super.render();
+    const pressureInput = new Input('text', 'Обычное давление*', "pressure", "", 'true', 'pressure-input', 'input');
+    const weightIndexInput = new Input('text', 'Индекс массы тела*', "weightIndex", "", 'true', 'weight-index-input', 'input');
+    const diseaseInput = new Input('text', 'Перенесенные заболевания сердечно-сосудистой системы*', "diseaseIndex", "", 'true', 'disease-input', 'input');
+    const ageInput = new Input('number', 'Возраст*', "age", "", 'true', 'age-input', 'input');
+    const submitBtn = new Input('submit', '', "", "Подтвердить", '', 'cardiolog-create-btn', 'submit-btn');
 
-        const visitForms = document.getElementById('visit-form');
-        ageInput.render(visitForms);
-        submitBtn.render(visitForms);
+    const visitForms = document.getElementById('visit-form');
+    pressureInput.render(visitForms);
+    weightIndexInput.render(visitForms);
+    diseaseInput.render(visitForms);
+    ageInput.render(visitForms);
+    submitBtn.render(visitForms);
 
-        const nameInput = document.getElementById('name-input');
-        const titleInput = document.getElementById('title-input');
-        const descriptionInput = document.getElementById('description-input');
-        const priorityInput = document.getElementById('form-visit-priority');
-        const ageInputs = document.getElementById('age-input');
+    const nameInput = document.getElementById('name-input');
+    const titleInput = document.getElementById('title-input');
+    const descriptionInput = document.getElementById('description-input');
+    const priorityInput = document.getElementById('form-visit-priority');
+    const pressureInputs = document.getElementById('pressure-input');
+    const weightIndexInputs = document.getElementById('weight-index-input');
+    const diseaseInputs = document.getElementById('disease-input');
+    const ageInputs = document.getElementById('age-input');
 
-        const requestOptions = super.checkRequestType(this._id);
-        visitForms.addEventListener('submit', function (event) {
-          event.preventDefault();
+    const requestOptions = super.checkRequestType(this._id);
+    visitForms.addEventListener('submit', function (event) {
+      event.preventDefault();
 
-          const name = nameInput.value;
-          const title = titleInput.value;
-          const description = descriptionInput.value;
-          const priority = priorityInput.value;
-          const age = ageInputs.value;
+      const name = nameInput.value;
+      const title = titleInput.value;
+      const description = descriptionInput.value;
+      const priority = priorityInput.value;
+      const pressure = pressureInputs.value;
+      const weightIndex = weightIndexInputs.value;
+      const disease = diseaseInputs.value;
+      const age = ageInputs.value;
 
-          const content = {
-            doctor: 'therapist',
-            name: name,
-            title: title,
-            description: description,
-            priority: priority,
-            age: age
-          };
+      const content = {
+        doctor: 'cardiologist',
+        name: name,
+        title: title,
+        description: description,
+        priority: priority,
+        age: age,
+        pressure: pressure,
+        weightIndex: weightIndex,
+        disease: disease,
+      };
 
-          const token = localStorage.getItem('token');
+      const token = localStorage.getItem('token');
 
-          const authorization = {
-            Authorization: `Bearer ${token}`
-          };
+      const authorization = {
+        Authorization: `Bearer ${token}`
+      };
 
-          const authOptions = {
-            method: requestOptions.method,
-            url: requestOptions.url,
-            data: JSON.stringify(content),
-            headers: authorization
-          };
+      const authOptions = {
+        method: requestOptions.method,
+        url: requestOptions.url,
+        data: JSON.stringify(content),
+        headers: authorization
+      };
 
-          axios(authOptions)
-            .then(function (response) {
+      axios(authOptions)
+        .then(function (response) {
 
-              if (response.status >= 200 && response.status < 300) {
-                const dataId = response.data.id;
+          if (response.status >= 200 && response.status < 300) {
 
-                document.getElementsByClassName('entry-modal-bg')[0].remove();
+            const dataId = response.data.id;
 
-                const visitTherapist = new VisitTherapist(age, dataId, name, "Терапевт", title, description, priority);
-                const cardsContainer = document.getElementById('cards-container');
-                visitTherapist.render(cardsContainer);
-                requestOptions.ifPut();
-              } else {
-                return alert('Ведутся технические работы')
-              }
-            });
-        });
-      }
-    }
+            document.getElementsByClassName('entry-modal-bg')[0].remove();
 
-
-    class visitFormCardiolog extends visitForm {
-      constructor(...args) {
-        super(...args);
-      }
-
-      render() {
-        super.render();
-        const pressureInput = new Input('text', 'Обычное давление*', "pressure", "", 'true', 'pressure-input', 'input');
-        const weightIndexInput = new Input('text', 'Индекс массы тела*', "weightIndex", "", 'true', 'weight-index-input', 'input');
-        const diseaseInput = new Input('text', 'Перенесенные заболевания сердечно-сосудистой системы*', "diseaseIndex", "", 'true', 'disease-input', 'input');
-        const ageInput = new Input('number', 'Возраст*', "age", "", 'true', 'age-input', 'input');
-        const submitBtn = new Input('submit', '', "", "Подтвердить", '', 'cardiolog-create-btn', 'submit-btn');
-
-        const visitForms = document.getElementById('visit-form');
-        pressureInput.render(visitForms);
-        weightIndexInput.render(visitForms);
-        diseaseInput.render(visitForms);
-        ageInput.render(visitForms);
-        submitBtn.render(visitForms);
-
-        const nameInput = document.getElementById('name-input');
-        const titleInput = document.getElementById('title-input');
-        const descriptionInput = document.getElementById('description-input');
-        const priorityInput = document.getElementById('form-visit-priority');
-        const pressureInputs = document.getElementById('pressure-input');
-        const weightIndexInputs = document.getElementById('weight-index-input');
-        const diseaseInputs = document.getElementById('disease-input');
-        const ageInputs = document.getElementById('age-input');
-
-        const requestOptions = super.checkRequestType(this._id);
-        visitForms.addEventListener('submit', function (event) {
-          event.preventDefault();
-
-          const name = nameInput.value;
-          const title = titleInput.value;
-          const description = descriptionInput.value;
-          const priority = priorityInput.value;
-          const pressure = pressureInputs.value;
-          const weightIndex = weightIndexInputs.value;
-          const disease = diseaseInputs.value;
-          const age = ageInputs.value;
-
-          const content = {
-            doctor: 'cardiologist',
-            name: name,
-            title: title,
-            description: description,
-            priority: priority,
-            age: age,
-            pressure: pressure,
-            weightIndex: weightIndex,
-            disease: disease,
-          };
-
-          const token = localStorage.getItem('token');
-
-          const authorization = {
-            Authorization: `Bearer ${token}`
-          };
-
-          const authOptions = {
-            method: requestOptions.method,
-            url: requestOptions.url,
-            data: JSON.stringify(content),
-            headers: authorization
-          };
-
-          axios(authOptions)
-            .then(function (response) {
-
-              if (response.status >= 200 && response.status < 300) {
-
-                const dataId = response.data.id;
-
-                document.getElementsByClassName('entry-modal-bg')[0].remove();
-
-                const visitCardiolog = new VisitCardio(pressure, weightIndex, disease, age, dataId, name, "Кардиолог", title, description, priority);
-                const cardsContainer = document.getElementById('cards-container');
-                visitCardiolog.render(cardsContainer);
-                requestOptions.ifPut();
-              } else {
-                return alert('Ведутся технические работы')
-              }
-            })
+            const visitCardiolog = new VisitCardio(pressure, weightIndex, disease, age, dataId, name, "Кардиолог", title, description, priority);
+            const cardsContainer = document.getElementById('cards-container');
+            visitCardiolog.render(cardsContainer);
+            requestOptions.ifPut();
+          } else {
+            return alert('Ведутся технические работы')
+          }
         })
-      }
-    }
+    })
+  }
+}

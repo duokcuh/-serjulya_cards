@@ -41,6 +41,10 @@ HTML/CSS:
 modal.css
 
 JS:
-class Modal;
-LocalStorage;
-GET/POST запросы
+class Modal и все внутрение отображения в модальных окнах;
+Код внутри слушателя событий по клику на "navbar";
+LocalStorage при загрузке страницы и сохранении всех изменений после + отрисовка имеющихся 
+карточек в базе данных, фильтров;
+Сотрудничество при написании class Select и наследуемые классы (SelectStatus, SelectPriority, 
+SelectDoctor и т.д.), class Option;
+Сделал шаблоны для команды на GET/POST/DELETE/PUT запросы для карточек.
