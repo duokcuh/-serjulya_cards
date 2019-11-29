@@ -2,6 +2,9 @@
 
 STEP_3: Cards
 
+email: team@gmail.com
+password: step
+
 1. Сергей Аникин (slack: Sergo):
 
 HTML/CSS:
@@ -17,21 +20,27 @@ class Visit и наследуемые классы;
 выделение токена при авторизации и сохранение его в Local Storage;
 метод проверки типа запроса (PUT/POST) в классе visitForm
 
-2. Юля Черненькая
+2. Юлия Чорненька (slack: Yulia Chornenka):
 
 HTML/CSS:
-header и фильтры;
-form.css
+Дизайн, header и фильтры;
+form.css, style.css
 
 JS:
-class Form и наследуемые классы (visitForm и т.д.);
-базовая логика фильтров
+class Form и наследуемые классы (registrationForm, visitForm, visitFormDentist и т.д.);
+class Input;
+class Select и наследуемые классы (SelectStatus, SelectPriority, SelectDoctor и т.д.);
+class Option;
+POST-запрос на авторизацию
+Сотрудничество при написании PUT-запроса на редактирование карточек
+Базовая логика фильтров
 
-3. Иван Рябоконь
+3. Иван Рябоконь (slack: Ivan R):
 
 HTML/CSS:
 modal.css
 
 JS:
 class Modal;
+LocalStorage;
 GET/POST запросы
