@@ -720,7 +720,7 @@ window.addEventListener('load', () => {
             .then(function (response) {
                 const dataArr = response.data;
 
-<<<<<<< HEAD
+// <<<<<<< HEAD
         if (response.status >= 200 && response.status < 300) {
           if (dataArr.length > 0) {
 =======
